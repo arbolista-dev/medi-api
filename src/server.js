@@ -1,10 +1,11 @@
 import express from 'express'
 import expressGraphQL from 'express-graphql'
+import schema from './data/schema'
 
 const server = global.server = express()
 
 server.use('/graphql', expressGraphQL({
-  schema: MyGraphQLSchema,
+  schema,
   graphiql: true
 }))
 
