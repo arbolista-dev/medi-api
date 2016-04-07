@@ -3,7 +3,7 @@ import { GraphQLString as StringType, GraphQLNonNull as NonNull,
 
 import SessionType from '../types/SessionType'
 
-const session = {
+const sessionQuery = {
   type: Session,
   args: {
     id: {
@@ -17,4 +17,4 @@ const session = {
   }
 }
 
-export default session
+export default sessionQuery

@@ -9,10 +9,8 @@ const SessionType = new ObjectType({
     },
     user: {
       type: User,
-      resolve(parent, args, {rootValue: {db}}) {
-        return db.get(`
-          SELECT * FROM User WHERE id = $id;`, { $id: parent.user }
-        )
+      resolve(parent, { user_id }, { sessionModel }}) {
+        return sessionModel.get({ user_id })
       }
     },
     status: {

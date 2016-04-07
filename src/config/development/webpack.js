@@ -1,11 +1,11 @@
 var path = require('path')
 
-const SERVER = path.join(__dirname, '..', '..')
-const ROOT = path.join(SERVER, '..')
+const SRC = path.join(__dirname, '..', '..')
+const ROOT = path.join(SRC, '..')
 
 module.exports = {
   entry: {
-    server: SERVER + '/server'
+    server: SRC + '/server'
   },
   output: {
     filename: 'server.js',
@@ -14,7 +14,9 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /node_modules/,
+      exclude: [
+        path.join(ROOT, 'node_modules'),
+      ],
       loader: 'babel'
     }, {
       test: /\.json$/,

@@ -1,22 +1,22 @@
 import {
   GraphQLString as StringType,
+  GraphQLID as ID,
   GraphQLNonNull as NonNull,
 } from 'graphql'
 
 import UserType from '../types/UserType'
-import User from '../../model/users'
+// import { listUsers, getUser, addUser } from '../../model/users'
 
-const user = {
-  type: User,
+const userQuery = {
+  type: UserType,
   args: {
     id: {
-      type: new GraphQLNonNull(GraphQLID)
+      type: new NonNull(ID)
     }
   },
-  resolve(parent, {id}) {
-    user = User()
-    return user.get({id})
+  resolve(parent, { id }, { rootValue: { ctx: { userModel }} }) {
+    return getUser({id})
   }
 }
 
-export default user
+export default userQuery

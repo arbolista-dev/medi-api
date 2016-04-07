@@ -1,6 +1,6 @@
 import db from 'pg'
 
-cont databaseUrl = 'postgres://medi_app:q1w2e3r4t5y6@localhost/medi_app'
+const databaseUrl = 'postgres://medi_app:q1w2e3r4t5y6@localhost/medi_app'
 
 db.defaults.ssl = true
 db.defaults.poolSize = 10
