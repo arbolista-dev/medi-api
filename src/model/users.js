@@ -4,32 +4,31 @@ class User {
 
   list() {
     db.connect(async ({ query }) => {
-      let result = await query( 'SELECT * FROM users')
+      let result = await query('SELECT * FROM users;')
+      console.log('User list: ', result)
       if (result.rowCount) {
-        // users exist
+        console.log('User list if: ', result)
       }
-    }).catch(done)
+    })
   }
 
   get(id) {
     db.connect(async ({ query }) => {
-      let result = await query( 'SELECT id, email FROM users WHERE id= $1;', id)
+      let result = await query('SELECT id, email FROM users WHERE id= $1;', id)
       if (result.rowCount) {
-        // users exists
+        console.log('User get: ', result)
       }
-    }).catch(done)
+    })
   }
 
   add(data) {
     db.connect(async ({ query }) => {
-      let result = await query( 'INSERT INTO users (id, email) VALUES ($1, $2);', data.id, data.email)
+      let result = await query('INSERT INTO users (id, email) VALUES ($1, $2);', data.id, data.email)
       if (result.rowCount) {
-        // users exists
+        console.log('User add: ', result)
       }
-    }).catch(done)
+    })
   }
-
-  update() {}
 }
 
 export default User

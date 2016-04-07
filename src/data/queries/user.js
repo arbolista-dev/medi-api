@@ -5,7 +5,9 @@ import {
 } from 'graphql'
 
 import UserType from '../types/UserType'
-// import { listUsers, getUser, addUser } from '../../model/users'
+import User from '../../model/users'
+
+var userModel = new User
 
 const userQuery = {
   type: UserType,
@@ -14,8 +16,8 @@ const userQuery = {
       type: new NonNull(ID)
     }
   },
-  resolve(parent, { id }, { rootValue: { ctx: { userModel }} }) {
-    return getUser({id})
+  resolve(parent, { id }, { userModel }) {
+    return userModel.get({id})
   }
 }
 

@@ -1,12 +1,11 @@
 var path = require('path')
+var nodeExternals = require('webpack-node-externals')
 
 const SRC = path.join(__dirname, '..', '..')
 const ROOT = path.join(SRC, '..')
 
 module.exports = {
-  entry: {
-    server: SRC + '/server'
-  },
+  entry: ['babel-polyfill', SRC + '/server'],
   output: {
     filename: 'server.js',
     path: ROOT + '/build/development'
@@ -14,14 +13,13 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: [
-        path.join(ROOT, 'node_modules'),
-      ],
+      exclude: /node_modules/,
       loader: 'babel'
     }, {
       test: /\.json$/,
       loader: 'json-loader'
     }]
   },
-  target: 'node'
+  target: 'node',
+  externals: [nodeExternals()]
 }
