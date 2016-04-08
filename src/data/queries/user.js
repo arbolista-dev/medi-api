@@ -1,23 +1,31 @@
 import {
-  GraphQLString as StringType,
-  GraphQLID as ID,
-  GraphQLNonNull as NonNull,
+  GraphQLString,
+  GraphQLID,
+  GraphQLNonNull
 } from 'graphql'
 
 import UserType from '../types/UserType'
 import User from '../../model/users'
 
-var userModel = new User
+var userModel = new User()
 
 const userQuery = {
   type: UserType,
   args: {
     id: {
-      type: new NonNull(ID)
+      name: 'id',
+      type: GraphQLString
     }
   },
-  resolve(parent, { id }, { userModel }) {
-    return userModel.get({id})
+  resolve(root, args) {
+    return userModel.get(args.id)
+    // not possible because type needs to be defined as List(UserType)
+    // if (args.id) {
+    //   return userModel.find(args.id)
+    // } else {
+    //   return userModel.list()
+    // }
+
   }
 }
 

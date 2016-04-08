@@ -3,31 +3,19 @@ import db from './db'
 class User {
 
   list() {
-    db.connect(async ({ query }) => {
-      let result = await query('SELECT * FROM users;')
-      console.log('User list: ', result)
-      if (result.rowCount) {
-        console.log('User list if: ', result)
-      }
-    })
+    return db.any("SELECT * FROM users;")
+      .then((data) => {
+        console.log('data list', data)
+        return data
+      })
   }
 
   get(id) {
-    db.connect(async ({ query }) => {
-      let result = await query('SELECT id, email FROM users WHERE id= $1;', id)
-      if (result.rowCount) {
-        console.log('User get: ', result)
-      }
-    })
-  }
-
-  add(data) {
-    db.connect(async ({ query }) => {
-      let result = await query('INSERT INTO users (id, email) VALUES ($1, $2);', data.id, data.email)
-      if (result.rowCount) {
-        console.log('User add: ', result)
-      }
-    })
+    return db.any('SELECT id, email FROM users WHERE id= $1;', id)
+      .then((data) => {
+        console.log('user get', data)
+        return data[0]
+      })
   }
 }
 

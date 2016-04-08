@@ -7,9 +7,15 @@ import {
 
 const UserType = new ObjectType({
   name: 'User',
-  fields: {
-    id: { type: new NonNull(ID) },
-    email: { type: StringType },
+  fields: () => {
+    return {
+      id: {
+        type: StringType
+      },
+      email: {
+        type: StringType
+      },
+    }
   },
 })
 

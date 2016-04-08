@@ -8,9 +8,9 @@ import user from './queries/user'
 const schema = new Schema({
   query: new ObjectType({
     name: 'Query',
-    fields: {
+    fields: () => ({
       user,
-    },
+    }),
   }),
 })
 
