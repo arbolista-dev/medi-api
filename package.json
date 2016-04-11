@@ -22,7 +22,6 @@
     "gutil": "^1.6.4",
     "json-loader": "^0.5.4",
     "pg": "^4.5.2",
-    "pg-native": "^1.10.0",
     "pg-promise": "^3.5.5",
     "webpack": "^1.12.14",
     "webpack-node-externals": "^1.0.0",

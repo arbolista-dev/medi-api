@@ -13,8 +13,14 @@ const UserType = new GraphQLObjectType({
       email: {
         type: GraphQLString
       },
+      first_name: {
+        type: GraphQLString
+      },
+      last_name: {
+        type: GraphQLString
+      }
     }
-  },
+  }
 })
 
 export default UserType

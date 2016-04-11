@@ -1,4 +1,7 @@
 {
+  "env": {
+    "node": true
+  },
   "extends": ["eslint:recommended"],
   "rules": {
     "quotes": ["error", "single", "avoid-escape"],

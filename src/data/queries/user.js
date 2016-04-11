@@ -1,14 +1,12 @@
 import {
   GraphQLString,
-  GraphQLID,
-  GraphQLNonNull,
   GraphQLList
 } from 'graphql'
 
 import userType from '../types/UserType'
 import User from '../../model/users'
 
-var userModel = new User()
+var UserModel = new User()
 
 const userQuery = {
   type: new GraphQLList(userType),
@@ -19,7 +17,7 @@ const userQuery = {
     }
   },
   resolve(root, args) {
-    return userModel.get(args.id)
+    return UserModel.get(args.id)
   }
 }
 

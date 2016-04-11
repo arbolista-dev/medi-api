@@ -11,14 +11,16 @@ import userMutation from './mutations/user'
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
-    fields: () => ({
+    fields: {
       user: userQuery
-    })
+    }
   }),
   mutation: new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-      addUser: userMutation.addUser
+      addUser: userMutation.addUser,
+      updateUser: userMutation.updateUser,
+      deleteUser: userMutation.deleteUser
     }
   })
 })

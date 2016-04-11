@@ -11,5 +11,5 @@ server.use('/graphql', expressGraphQL({
 
 
 server.listen(3003, () => {
-  console.log(`The server is running at http://localhost:3003/`)
+  console.log('The server is running at http://localhost:3003/')
 })
