@@ -1,17 +1,26 @@
 import {
-  GraphQLSchema as Schema,
-  GraphQLObjectType as ObjectType,
+  GraphQLSchema,
+  GraphQLObjectType
 } from 'graphql'
 
-import user from './queries/user'
+import userQuery from './queries/user'
+import userMutation from './mutations/user'
 
-const schema = new Schema({
-  query: new ObjectType({
+// console.log(userMutation)
+
+const schema = new GraphQLSchema({
+  query: new GraphQLObjectType({
     name: 'Query',
     fields: () => ({
-      user,
-    }),
+      user: userQuery
+    })
   }),
+  mutation: new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      addUser: userMutation.addUser
+    }
+  })
 })
 
 export default schema

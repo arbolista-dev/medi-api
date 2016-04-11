@@ -1,16 +1,17 @@
 import {
   GraphQLString,
   GraphQLID,
-  GraphQLNonNull
+  GraphQLNonNull,
+  GraphQLList
 } from 'graphql'
 
-import UserType from '../types/UserType'
+import userType from '../types/UserType'
 import User from '../../model/users'
 
 var userModel = new User()
 
 const userQuery = {
-  type: UserType,
+  type: new GraphQLList(userType),
   args: {
     id: {
       name: 'id',
@@ -19,13 +20,6 @@ const userQuery = {
   },
   resolve(root, args) {
     return userModel.get(args.id)
-    // not possible because type needs to be defined as List(UserType)
-    // if (args.id) {
-    //   return userModel.find(args.id)
-    // } else {
-    //   return userModel.list()
-    // }
-
   }
 }
 

@@ -1,11 +1,11 @@
-import { GraphQLObjectType as ObjectType, GraphQLString as StringType, GraphQLNonNull as NonNull,
+import { GraphQLObjectType, GraphQLString, GraphQLNonNull
 } from 'graphql'
 
-const SessionType = new ObjectType({
+const SessionType = new GraphQLObjectType({
   name: 'Session',
   fields: () => ({
     id: {
-      type: new NonNull(ID)
+      type: new GraphQLNonNull(ID)
     },
     user: {
       type: User,
@@ -14,22 +14,22 @@ const SessionType = new ObjectType({
       }
     },
     status: {
-      type: StringType
+      type: GraphQLString
     },
     date: {
-      type: StringType
+      type: GraphQLString
     },
     duration_planned: {
-      type: StringType
+      type: GraphQLString
     },
     duration_success: {
-      type: StringType
+      type: GraphQLString
     },
     note: {
-      type: StringType
+      type: GraphQLString
     },
     location: {
-      type: StringType
+      type: GraphQLString
     },
   })
 })

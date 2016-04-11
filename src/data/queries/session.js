@@ -1,4 +1,4 @@
-import { GraphQLString as StringType, GraphQLNonNull as NonNull,
+import { GraphQLNonNull, GraphQLID
 } from 'graphql'
 
 import SessionType from '../types/SessionType'
