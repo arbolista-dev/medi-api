@@ -1,17 +1,19 @@
-import { GraphQLObjectType, GraphQLString, GraphQLNonNull
+import {
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLList
 } from 'graphql'
+
+import userType from './UserType'
+import User from '../../model/users'
+
+var UserModel = new User()
 
 const SessionType = new GraphQLObjectType({
   name: 'Session',
   fields: () => ({
     id: {
-      type: new GraphQLNonNull(ID)
-    },
-    user: {
-      type: User,
-      resolve(parent, { user_id }, { sessionModel }}) {
-        return sessionModel.get({ user_id })
-      }
+      type: GraphQLString
     },
     status: {
       type: GraphQLString
@@ -31,6 +33,16 @@ const SessionType = new GraphQLObjectType({
     location: {
       type: GraphQLString
     },
+    user_id: {
+      type: GraphQLString
+    },
+    user: {
+      type: new GraphQLList(userType),
+      description: 'The sessions user',
+      resolve(root, args) {
+        return UserModel.get(root.user_id)
+      }
+    }
   })
 })
 

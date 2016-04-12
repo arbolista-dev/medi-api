@@ -54,3 +54,22 @@ mutation {
     last_name
   }
 }
+
+### List all sessions
+
+{
+  session {
+    id
+    duration_planned
+    duration_success
+    user {
+      email,
+      id,
+      first_name,
+      last_name
+    }
+    user_id
+    status
+    note
+  }
+}

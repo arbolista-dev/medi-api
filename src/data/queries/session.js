@@ -1,19 +1,23 @@
-import { GraphQLNonNull, GraphQLID
+import {
+  GraphQLString,
+  GraphQLList
 } from 'graphql'
 
-import SessionType from '../types/SessionType'
+import sessionType from '../types/SessionType'
+import Session from '../../model/sessions'
+
+var SessionModel = new Session()
 
 const sessionQuery = {
-  type: Session,
+  type: new GraphQLList(sessionType),
   args: {
     id: {
-      type: new GraphQLNonNull(GraphQLID)
+      name: 'id',
+      type: GraphQLString
     }
   },
-  resolve(parent, {id}, {rootValue: {db}}) {
-    return db.get(`
-      SELECT * FROM sessions WHERE id = $id
-      `, {$id: id})
+  resolve(root, args) {
+    return SessionModel.get(args.id)
   }
 }
 

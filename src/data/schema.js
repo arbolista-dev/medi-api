@@ -3,24 +3,30 @@ import {
   GraphQLObjectType
 } from 'graphql'
 
-import userQuery from './queries/user'
-import userMutation from './mutations/user'
+import userQueries from './queries/user'
+import userMutations from './mutations/user'
 
-// console.log(userMutation)
+import sessionQueries from './queries/session'
+import sessionMutations from './mutations/session'
+
 
 const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields: {
-      user: userQuery
+      user: userQueries,
+      session: sessionQueries
     }
   }),
   mutation: new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-      addUser: userMutation.addUser,
-      updateUser: userMutation.updateUser,
-      deleteUser: userMutation.deleteUser
+      addUser: userMutations.addUser,
+      updateUser: userMutations.updateUser,
+      deleteUser: userMutations.deleteUser,
+      addSession: sessionMutations.addSession,
+      updateSession: sessionMutations.updateSession,
+      deleteSession: sessionMutations.deleteSession
     }
   })
 })
