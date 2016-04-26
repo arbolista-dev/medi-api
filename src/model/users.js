@@ -1,4 +1,5 @@
 import db from './db'
+var bcrypt = require('bcrypt')
 
 class User {
 
@@ -9,20 +10,31 @@ class User {
           console.log('Get user', data)
           return data
         })
+        .catch((error) => {
+          console.log(error)
+        })
     } else {
       return db.any('SELECT * FROM users')
         .then((data) => {
           console.log('List users', data)
           return data
         })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   }
 
   add(data) {
-    return db.one('INSERT INTO users (email, first_name, last_name) VALUES ($1, $2, $3) RETURNING id', [data.email, data.first_name, data.last_name])
+    this.setPassword(data)
+    console.log('pw to be inserted', this.hash)
+    return db.one('INSERT INTO users (email, first_name, last_name, hash) VALUES ($1, $2, $3, $4) RETURNING id', [data.email, data.first_name, data.last_name, this.hash])
       .then((data) => {
         console.log('Created new user with ID:', data.id)
         return data
+      })
+      .catch((error) => {
+        console.log(error)
       })
   }
 
@@ -33,6 +45,9 @@ class User {
         console.log('Updated user with ID:', result.rows)
         return result.rows[0]
       })
+      .catch((error) => {
+        console.log(error)
+      })
   }
 
   delete(id) {
@@ -41,6 +56,22 @@ class User {
         console.log('Deleted user with ID:', id)
         return result
       })
+      .catch((error) => {
+        console.log(error)
+      })
+  }
+
+  setPassword(data) {
+    console.log('data', data)
+    bcrypt.hash(data.password, 10, (err, hash) => {
+        if(err) return next(err);
+        console.log('hash', hash)
+        return hash;
+        next();
+    })
+  }
+  checkPassword(username, password) {
+
   }
 }
 
