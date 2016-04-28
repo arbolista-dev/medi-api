@@ -1,11 +1,9 @@
 import db from './db'
+import jsonwebtoken from 'jsonwebtoken'
 var bcrypt = require('bcrypt')
+var config = require('../config/constants')
 
 class User {
-
-    constructor() {
-        this.password = null
-    }
 
     get(id) {
         if (id) {
@@ -30,18 +28,25 @@ class User {
     }
 
     add(data) {
-        return this.setPassword(data.password).then(hash => {
-            console.log('pw to be inserted', hash)
+        return this.hashPassword(data.password).then(hash => {
             return db.one('INSERT INTO users (email, first_name, last_name, hash) VALUES ($1, $2, $3, $4) RETURNING id', [data.email, data.first_name, data.last_name, hash])
                 .then((data) => {
                     console.log('Created new user with ID:', data.id)
+                    this.checkPassword(data.id, 'testtesttest')
                     return data
                 })
                 .catch((error) => {
-                    console.log(error)
+                    switch (error.code) {
+                      case '23505':
+                        throw new Error('User already exists.')
+                        break;
+                      case '23502':
+                        throw new Error('Required field ' + error.column + ' not given')
+                        break;
+                    }
                 })
         }).catch((error) => {
-            console.log('set PW error', error)
+          throw new Error('Password is required in correct format.')
         })
     }
 
@@ -68,25 +73,46 @@ class User {
             })
     }
 
-    setPassword(data) {
+    hashPassword(password) {
         return new Promise((resolve, reject) => {
-            console.log('pw clear', data)
             bcrypt.genSalt(10, (err, salt) => {
                 if (err) return reject(err)
 
-                // Now, with the given salt, generate the hash
-                bcrypt.hash(data, salt, (err, hash) => {
+                bcrypt.hash(password, salt, (err, hash) => {
                     if (err) return reject(err)
 
-                    // Hash generated successfully!
-                    return resolve(hash);
-                });
+                    return resolve(hash)
+                })
             })
         })
     }
 
-    checkPassword(username, password) {
+    checkPassword(user_id, password) {
+        return db.any('SELECT hash FROM users WHERE id= $1', user_id)
+            .then((hash) => {
+                bcrypt.compare(password, hash[0].hash, (err, res) => {
+                    if (err) return err
+                    console.log('is password correct?', res)
+                    return res
+                })
+            })
+            .catch((error) => {
+              throw new Error('User or corresponding password not found.')
+            })
+    }
 
+    generateJwt(data) {
+      let expiry = new Date()
+      expiry.setDate(expiry.getDate() + 7)
+      let name = data.first_name + ' ' + data.last_name
+      let secret = config.dev.secret
+
+      return jsonwebtoken.sign({
+        _id: data.id,
+        email: data.email,
+        name: name,
+        exp: parseInt(expiry.getTime() / 1000)
+      }, secret)
     }
 }
 

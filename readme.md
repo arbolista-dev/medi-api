@@ -19,7 +19,7 @@ gulp build
 ### Add user
 
 mutation {
-  addUser(email: "mine@email.com", first_name:"Manuel", last_name:"Tester") {
+  addUser(email: "mine@email.com", first_name:"Manuel", last_name:"Tester", password: "testtesttest") {
     id
   }
 }
