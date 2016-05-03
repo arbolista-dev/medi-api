@@ -99,15 +99,19 @@ class User {
         } else {
             return this.getByEmail(req.email)
                 .then((user) => {
-                    return this.checkPassword(user[0].id, req.password)
-                        .then((auth_status) => {
-                            console.log('auth! status', auth_status)
-                            let token = this.generateJwt(user.id, user)
-                            console.log('User authenticated using JWT: ', token)
-                            console.log('type of token', typeof token)
-                            return token
+                    return this.getHashByUserId(user[0].id)
+                        .then((hash) => {
+                            return this.checkPassword(hash, req.password)
+                                .then((status) => {
+                                  let result = {}
+                                    console.log('Password is correct? ', status)
+                                    result.token = this.generateJwt(user.id, user)
+                                    console.log('User authenticated using JWT: ', result)
+                                    return result
+                                })
+                                .catch((error) => console.log('check Password error: ', error))
                         })
-                        .catch((error) => console.log('auth! error', error))
+                        .catch((error) => console.log('get Hash error: ', error))
                 })
                 .catch((error) => {
                     throw new Error('getByEmail error: ', error)
@@ -129,20 +133,23 @@ class User {
         })
     }
 
-    checkPassword(user_id, password) {
-        console.log('checkPassword user_id', user_id)
-        console.log('checkPassword password', password)
+    getHashByUserId(user_id) {
         return db.any('SELECT hash FROM users WHERE id= $1', user_id)
             .then((hash) => {
-                bcrypt.compare(password, hash[0].hash, (err, res) => {
-                    if (err) return err
-                    console.log('is password correct?', res)
-                    return res
-                })
+                return hash[0].hash
             })
             .catch((error) => {
                 throw new Error('User or corresponding password not found.')
             })
+    }
+
+    checkPassword(hash, password) {
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, hash, (err, res) => {
+                if (err) return reject(err)
+                return resolve(res)
+            })
+        })
     }
 
     generateJwt(id, data) {
