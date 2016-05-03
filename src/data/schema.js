@@ -24,6 +24,7 @@ const schema = new GraphQLSchema({
       addUser: userMutations.addUser,
       updateUser: userMutations.updateUser,
       deleteUser: userMutations.deleteUser,
+      authenticateUser: userMutations.authenticateUser,
       addSession: sessionMutations.addSession,
       updateSession: sessionMutations.updateSession,
       deleteSession: sessionMutations.deleteSession

@@ -54,7 +54,21 @@ var userMutation = {
       }
     },
     resolve: (root, args) => UserModel.delete(args.id)
-  }
+  },
+  authenticateUser: {
+    type: userType,
+    args: {
+      email: {
+        type: GraphQLString
+      },
+      password: {
+        type: GraphQLString
+      }
+    },
+    resolve(root, args) {
+      return UserModel.authenticate(args)
+    }
+  },
 
 }
 

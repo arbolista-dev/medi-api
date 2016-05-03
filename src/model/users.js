@@ -1,7 +1,8 @@
 import db from './db'
 import jsonwebtoken from 'jsonwebtoken'
+import passport from 'passport'
 var bcrypt = require('bcrypt')
-var config = require('../config/constants')
+require('dotenv').load()
 
 class User {
 
@@ -27,26 +28,43 @@ class User {
         }
     }
 
-    add(data) {
-        return this.hashPassword(data.password).then(hash => {
-            return db.one('INSERT INTO users (email, first_name, last_name, hash) VALUES ($1, $2, $3, $4) RETURNING id', [data.email, data.first_name, data.last_name, hash])
+    getByEmail(email) {
+        if (email) {
+            return db.any('SELECT * FROM users WHERE email= $1', email)
                 .then((data) => {
-                    console.log('Created new user with ID:', data.id)
-                    this.checkPassword(data.id, 'testtesttest')
+                    console.log('Get user by email', data)
                     return data
                 })
                 .catch((error) => {
+                    console.log(error)
+                })
+        } else {
+            throw new Error('No email address specified.')
+        }
+    }
+
+    add(data) {
+        return this.hashPassword(data.password).then(hash => {
+            return db.one('INSERT INTO users (email, first_name, last_name, hash) VALUES ($1, $2, $3, $4) RETURNING id', [data.email, data.first_name, data.last_name, hash])
+                .then((user) => {
+                    let result = {}
+                    result.id = user.id
+                    result.token = this.generateJwt(user.id, data)
+                    console.log('Created user: ', result)
+                    return result
+                })
+                .catch((error) => {
                     switch (error.code) {
-                      case '23505':
-                        throw new Error('User already exists.')
-                        break;
-                      case '23502':
-                        throw new Error('Required field ' + error.column + ' not given')
-                        break;
+                        case '23505':
+                            throw new Error('User already exists.')
+                            break;
+                        case '23502':
+                            throw new Error('Required field ' + error.column + ' not given')
+                            break;
                     }
                 })
         }).catch((error) => {
-          throw new Error('Password is required in correct format.')
+            return error
         })
     }
 
@@ -73,6 +91,30 @@ class User {
             })
     }
 
+    authenticate(req) {
+        console.log('model auth user: ', req)
+        if (!req.email || !req.password) {
+            throw new Error('All fields required.')
+            return
+        } else {
+            return this.getByEmail(req.email)
+                .then((user) => {
+                    return this.checkPassword(user[0].id, req.password)
+                        .then((auth_status) => {
+                            console.log('auth! status', auth_status)
+                            let token = this.generateJwt(user.id, user)
+                            console.log('User authenticated using JWT: ', token)
+                            console.log('type of token', typeof token)
+                            return token
+                        })
+                        .catch((error) => console.log('auth! error', error))
+                })
+                .catch((error) => {
+                    throw new Error('getByEmail error: ', error)
+                })
+        }
+    }
+
     hashPassword(password) {
         return new Promise((resolve, reject) => {
             bcrypt.genSalt(10, (err, salt) => {
@@ -88,6 +130,8 @@ class User {
     }
 
     checkPassword(user_id, password) {
+        console.log('checkPassword user_id', user_id)
+        console.log('checkPassword password', password)
         return db.any('SELECT hash FROM users WHERE id= $1', user_id)
             .then((hash) => {
                 bcrypt.compare(password, hash[0].hash, (err, res) => {
@@ -97,22 +141,21 @@ class User {
                 })
             })
             .catch((error) => {
-              throw new Error('User or corresponding password not found.')
+                throw new Error('User or corresponding password not found.')
             })
     }
 
-    generateJwt(data) {
-      let expiry = new Date()
-      expiry.setDate(expiry.getDate() + 7)
-      let name = data.first_name + ' ' + data.last_name
-      let secret = config.dev.secret
+    generateJwt(id, data) {
+        let expiry = new Date()
+        expiry.setDate(expiry.getDate() + 7)
+        let full_name = data.first_name + ' ' + data.last_name
 
-      return jsonwebtoken.sign({
-        _id: data.id,
-        email: data.email,
-        name: name,
-        exp: parseInt(expiry.getTime() / 1000)
-      }, secret)
+        return jsonwebtoken.sign({
+            _id: id,
+            email: data.email,
+            name: full_name,
+            exp: parseInt(expiry.getTime() / 1000)
+        }, process.env.JWT_SECRET)
     }
 }
 

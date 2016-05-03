@@ -29,6 +29,9 @@ const UserType = new GraphQLObjectType({
       resolve(root, args) {
         return SessionModel.getByUser(root.id)
       }
+    },
+    token: {
+      type: GraphQLString
     }
   })
 })

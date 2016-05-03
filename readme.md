@@ -19,10 +19,12 @@ gulp build
 ### Add user
 
 mutation {
-  addUser(email: "mine@email.com", first_name:"Manuel", last_name:"Tester", password: "testtesttest") {
-    id
+  addUser(email: "abc@example.com", first_name:"Manuel", last_name:"Tester", password: "test2016") {
+    id,
+    token
   }
 }
+
 
 ### Update user
 
@@ -43,6 +45,15 @@ mutation {
     id
   }
 }
+
+### Authenticate user
+
+mutation {
+  authenticateUser(email: "abc@example.com", password: "test2016") {
+    token
+  }
+}
+
 
 ### List all users
 
