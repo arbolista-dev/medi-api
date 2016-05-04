@@ -71,27 +71,38 @@ class User {
     })
   }
 
+  beforeUpdate(data) {
+    if (data.password) {
+      return this.hashPassword(data.password).then(hash => {
+        data.hash = hash
+        return data
+      }).catch((error) => {
+        return error
+      })
+    }
+  }
+
   update(data) {
-    console.log('data is:', data)
-    return db.result('UPDATE users SET email = COALESCE($2, email), first_name = COALESCE($3, first_name), last_name = COALESCE($4, last_name) WHERE id = $1 RETURNING email, id, first_name, last_name', [data.id, data.email, data.first_name, data.last_name])
-            .then((result) => {
-              console.log('Updated user with ID:', result.rows)
-              return result.rows[0]
-            })
-            .catch((error) => {
-              return new Error('User update error: ', error)
-            })
+    this.beforeUpdate(data)
+    return db.result('UPDATE users SET email = COALESCE($2, email), first_name = COALESCE($3, first_name), last_name = COALESCE($4, last_name), hash = COALESCE($5, hash) WHERE id = $1 RETURNING email, id, first_name, last_name', [data.id, data.email, data.first_name, data.last_name, data.hash])
+      .then((result) => {
+        console.log('Updated user:', result.rows)
+        return result.rows[0]
+      })
+      .catch((error) => {
+        return new Error('User update error: ', error)
+      })
   }
 
   delete(id) {
     return db.result('DELETE FROM users WHERE id = $1', id)
-            .then((result) => {
-              console.log('Deleted user with ID:', id)
-              return result
-            })
-            .catch((error) => {
-              return new Error('User deletion error: ', error)
-            })
+      .then((result) => {
+        console.log('Deleted user with ID:', id)
+        return result
+      })
+      .catch((error) => {
+        return new Error('User deletion error: ', error)
+      })
   }
 
   authenticate(req) {
@@ -152,7 +163,7 @@ class User {
         return hash[0].hash
       })
       .catch((error) => {
-        throw new Error('User or corresponding password not found.')
+        return new Error('User or corresponding password not found.')
       })
   }
 

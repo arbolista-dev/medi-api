@@ -41,10 +41,10 @@ insert into users (email, first_name, last_name) values
 alter sequence users_id_seq restart with 4;
 
 insert into sessions (id, user_id, status, date, duration_planned, duration_success, location, note) values
-  (1, 1, true, 2016-04-27 04:05:06, 0 0:10:00, 0 0:10:00, 'At home', 'Good day'),
-  (2, 1, false, 2016-03-27 08:05:06, 0 0:20:00, 0 0:15:00, 'In the park', 'Bad day'),
-  (3, 2, true, 2016-04-24 04:05:06, 0 0:10:00, 0 0:10:00, 'In bed', 'Rainy day'),
-  (4, 3, true, 2016-04-22 04:05:06, 0 0:10:00, 0 0:10:00, 'In the metro', 'Busy day');
+  (1, 1, true, '2016-04-27 04:05:06', '0 0:10:00', '0 0:10:00', 'At home', 'Good day'),
+  (2, 1, false, '2016-03-27 08:05:06', '0 0:20:00', '0 0:15:00', 'In the park', 'Bad day'),
+  (3, 2, true, '2016-04-24 04:05:06', '0 0:10:00', '0 0:10:00', 'In bed', 'Rainy day'),
+  (4, 3, true, '2016-04-22 04:05:06', '0 0:10:00', '0 0:10:00', 'In the metro', 'Busy day');
 
 alter sequence post_id_seq restart with 5;
 

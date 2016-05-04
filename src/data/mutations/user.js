@@ -42,6 +42,9 @@ var userMutation = {
       },
       last_name: {
         type: GraphQLString
+      },
+      password: {
+        type: GraphQLString
       }
     },
     resolve: (root, args) => UserModel.update(args)

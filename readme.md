@@ -29,7 +29,7 @@ mutation {
 ### Update user
 
 mutation{
-  updateUser(id: "12", email: "new@test.com", first_name:"Thomas") {
+  updateUser(id: "12", email: "new@test.com", first_name:"Thomas", password: "new_password") {
     id,
     email,
     first_name,
@@ -55,14 +55,23 @@ mutation {
 }
 
 
-### List all users
+### List all users with their sessions
 
 {
   user {
     id
     email,
     first_name,
-    last_name
+    last_name,
+    sessions {
+      id,
+      status,
+      date,
+      duration_planned,
+      duration_success,
+      location,
+      note
+    }
   }
 }
 
