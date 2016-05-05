@@ -4,11 +4,20 @@
   "description": "Server API for Medi app.",
   "main": "gulpfile.babel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "schema-create": "psql -U medi_app -f src/config/schema.sql",
-    "schema-drop": "psql -U medi_app -c 'drop schema medi_app cascade'"
+    "test": "./node_modules/.bin/karma start --single-run",
+    "db-migrate": "./node_modules/.bin/pg-migrate up --migrations-dir src/config/migrations",
+    "db-rollback": "./node_modules/.bin/pg-migrate down --migrations-dir src/config/migrations"
   },
-  "author": "manue1",
+  "contributors": [
+    {
+      "name": "Manuel Bergler",
+      "email": "manuel.bergler@gmail.com"
+    }
+  ],
+  "author": {
+    "name": "Arbolista Development",
+    "website": "http://www.arbolista.mx"
+  },
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^0.8.6",
@@ -34,6 +43,7 @@
     "gulp": "^3.9.1",
     "gutil": "^1.6.4",
     "json-loader": "^0.5.4",
+    "node-pg-migrate": "0.0.10",
     "webpack": "^1.12.14",
     "webpack-node-externals": "^1.0.0",
     "yargs": "^4.4.0"
