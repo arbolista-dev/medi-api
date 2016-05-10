@@ -1,7 +1,8 @@
 import {
   GraphQLObjectType,
   GraphQLList,
-  GraphQLString
+  GraphQLString,
+  GraphQLInt
 } from 'graphql'
 
 import sessionType from '../types/SessionType'
@@ -13,7 +14,7 @@ const UserType = new GraphQLObjectType({
   name: 'User',
   fields: () => ({
     id: {
-      type: GraphQLString
+      type: GraphQLInt
     },
     email: {
       type: GraphQLString

@@ -10,7 +10,7 @@ exports.up = function(pgm) {
     date: 'timestamp',
     duration_planned: 'interval',
     duration_success: 'interval',
-    location: 'point',
+    location: 'varchar(50)',
     note: 'varchar(255)'
   });
 };

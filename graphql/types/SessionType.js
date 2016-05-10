@@ -1,17 +1,18 @@
 import {
   GraphQLObjectType,
   GraphQLString,
-  GraphQLList
+  GraphQLBoolean,
+  GraphQLInt
 } from 'graphql'
 
 const SessionType = new GraphQLObjectType({
   name: 'Session',
   fields: () => ({
     id: {
-      type: GraphQLString
+      type: GraphQLInt
     },
     status: {
-      type: GraphQLString
+      type: GraphQLBoolean
     },
     date: {
       type: GraphQLString
@@ -29,7 +30,7 @@ const SessionType = new GraphQLObjectType({
       type: GraphQLString
     },
     user_id: {
-      type: GraphQLString
+      type: GraphQLInt
     }
   })
 })
