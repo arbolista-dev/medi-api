@@ -1,20 +1,17 @@
 exports.up = function(pgm) {
   pgm.createTable( 'sessions', {
-    id: {
-      type: 'serial',
-      primaryKey: true
-    },
+    id: 'id',
     user_id: {
       type: 'integer',
       references: 'users',
       onDelete: 'cascade'
     },
-    status: { type: 'boolean' },
-    date: { type: 'timestamp' },
-    duration_planned: { type: 'interval' },
-    duration_success: { type: 'interval' },
-    location: { type: 'varchar(50)' },
-    note: { type: 'varchar(255)' }
+    status: 'boolean',
+    date: 'timestamp',
+    duration_planned: 'interval',
+    duration_success: 'interval',
+    location: 'varchar(50)',
+    note: 'varchar(255)'
   });
 };
 
