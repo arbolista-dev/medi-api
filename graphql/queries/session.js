@@ -4,7 +4,7 @@ import {
 } from 'graphql'
 
 import sessionType from '../types/SessionType'
-import Session from '../../model/sessions'
+import Session from '../../model/session/session'
 
 var SessionModel = new Session()
 

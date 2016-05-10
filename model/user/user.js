@@ -1,4 +1,4 @@
-import db from './db'
+import db from '../../db/config'
 import jsonwebtoken from 'jsonwebtoken'
 
 var bcrypt = require('bcrypt')

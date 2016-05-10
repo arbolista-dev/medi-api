@@ -4,9 +4,9 @@
   "description": "Server API for Medi app.",
   "main": "gulpfile.babel.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register src/**/__tests__/**/*.js",
-    "db-migrate": "./node_modules/.bin/pg-migrate up --migrations-dir src/config/migrations",
-    "db-rollback": "./node_modules/.bin/pg-migrate down --migrations-dir src/config/migrations"
+    "test": "mocha --compilers js:babel-core/register **/__tests__/**/*.js",
+    "db-migrate": "./node_modules/.bin/pg-migrate up --migrations-dir db/migrations",
+    "db-rollback": "./node_modules/.bin/pg-migrate down --migrations-dir db/migrations"
   },
   "contributors": [
     {

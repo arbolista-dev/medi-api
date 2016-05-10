@@ -3,7 +3,7 @@ import {
 } from 'graphql'
 
 import userType from '../types/UserType'
-import User from '../../model/users'
+import User from '../../model/user/user'
 
 var UserModel = new User()
 

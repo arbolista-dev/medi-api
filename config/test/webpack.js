@@ -5,7 +5,6 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      include: /src/,
       exclude: /node_modules/,
       loader: 'babel',
       query: {
@@ -15,7 +14,4 @@ module.exports = {
   },
   target: 'node',
   externals: [nodeExternals()]
-  // externals: [nodeExternals({
-    // whitelist: ['graphql']
-  // })]
 }

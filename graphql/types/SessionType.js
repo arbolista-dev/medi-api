@@ -4,11 +4,6 @@ import {
   GraphQLList
 } from 'graphql'
 
-import userType from './UserType'
-import User from '../../model/users'
-
-var UserModel = new User()
-
 const SessionType = new GraphQLObjectType({
   name: 'Session',
   fields: () => ({
@@ -35,13 +30,6 @@ const SessionType = new GraphQLObjectType({
     },
     user_id: {
       type: GraphQLString
-    },
-    user: {
-      type: new GraphQLList(userType),
-      description: 'The sessions user',
-      resolve(root, args) {
-        return UserModel.get(root.user_id)
-      }
     }
   })
 })
