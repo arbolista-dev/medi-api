@@ -1,7 +1,6 @@
-var config = require('../config/constants')
+require('dotenv').load()
 
 var pgp = require('pg-promise')()
-var connectionString = config.dev.database
-var db = pgp(connectionString)
+var db = pgp(process.env.DATABASE_URL)
 
 export default db

@@ -71,8 +71,7 @@ var userMutation = {
     resolve(root, args) {
       return UserModel.authenticate(args)
     }
-  },
-
+  }
 }
 
 export default userMutation

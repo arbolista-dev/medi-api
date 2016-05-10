@@ -34,7 +34,7 @@ class User {
         .then((data) => {
           console.log('Get user by email', data)
           if (data[0] == null) {
-            throw new Error('Specified user not found')
+            return new Error('Specified user not found')
             return
           } else {
             return data
@@ -101,6 +101,7 @@ class User {
         return result
       })
       .catch((error) => {
+        console.log(error)
         return new Error('User deletion error: ', error)
       })
   }
@@ -151,6 +152,7 @@ class User {
         if (err) return reject(err)
         bcrypt.hash(password, salt, (err, hash) => {
           if (err) return reject(err)
+          console.log("Hashed password: ", hash)
           return resolve(hash)
         })
       })
