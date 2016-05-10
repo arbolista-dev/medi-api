@@ -1,0 +1,258 @@
+Add:
+  root_type: 'mutation'
+  field: 'addUser'
+  description:
+  - This will create a new user account.
+  parameters:
+    email:
+      type: String
+      errors:
+        - non-unique
+        - missing
+    first_name:
+      type: String
+      errors:
+        - missing
+    last_name:
+      type: String
+      errors:
+        - missing
+    password:
+      type: String
+      errors:
+        - missing
+        - mismatch
+  examples:
+    "User is successfully created":
+      request:
+        arguments:
+          email: jimmy@example.com
+          password: jimmy1
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          addUser:
+            id: 1
+            email: jimmy@example.com
+            first_name: Jimmy
+            last_name: Hendrix
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjEwLCJlbWFpbCI6ImphQGV4YW1wbGUuY29tIiwibmFtZSI6IkppbW15IEhlbmRyaXgiLCJleHAiOjE0NjM1MDk5MzcsImlhdCI6MTQ2MjkwNTEzN30.HO8j9XwR9s2egdAazc5UfhHQOfk-VE2-T25o6q3SpVU
+    "Email is not unique":
+      request:
+        arguments:
+          email: jimmy@example.com
+          password: jimmy1
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            - non-unique
+    "Email is not given":
+      request:
+        arguments:
+          password: jimmy1
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            - missing
+    "First name is not given":
+      request:
+        arguments:
+          email: jimmy@example.com
+          password: jimmy1
+          last_name: Hendrix
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            - missing
+    "Last name is not given":
+      request:
+        arguments:
+          email: jimmy@example.com
+          password: jimmy1
+          first_name: Jimmy
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            - missing
+    "Password is not given":
+      request:
+        arguments:
+          email: jimmy@example.com
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            - missing
+
+Update:
+  root_type: 'mutation'
+  field: 'updateUser'
+  description:
+  - This will update an existing user account.
+  parameters:
+    id:
+      type: String
+      errors:
+        - non-existing
+        - missing
+    email:
+      type: String
+      errors:
+        - non-unique
+        - missing
+    first_name:
+      type: String
+    last_name:
+      type: String
+    password:
+      type: String
+      errors:
+        - mismatch
+  examples:
+    "User is successfully updated":
+      request:
+        arguments:
+          id: 1
+          email: jim@example.com
+          password: jimmy3
+          first_name: Jim
+          last_name: Hendrix
+      response:
+        data:
+          updateUser:
+            id: 1
+            email: jim@example.com
+            first_name: Jim
+            last_name: Hendrix
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjEwLCJlbWFpbCI6ImphQGV4YW1wbGUuY29tIiwibmFtZSI6IkppbW15IEhlbmRyaXgiLCJleHAiOjE0NjM1MDk5MzcsImlhdCI6MTQ2MjkwNTEzN30.HO8j9XwR9s2egdAazc5UfhHQOfk-VE2-T25o6q3SpVU
+    "Email is not unique":
+      request:
+        arguments:
+          id: 1
+          email: jimmy@example.com
+          password: jimmy1
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          updateUser: null
+        errors:
+          message:
+            - non-unique
+    "User does not exist":
+      request:
+        arguments:
+          id: 100
+          email: jimmy@example.com
+          first_name: Jimmy
+          last_name: Hendrix
+      response:
+        data:
+          updateUser: null
+        errors:
+          message:
+            - missing
+
+Delete:
+  root_type: 'mutation'
+  field: 'deleteUser'
+  description:
+  - This will delete a User account.
+  parameters:
+    id:
+      type: String
+      errors:
+        - missing
+  examples:
+    "User is successfully deleted":
+      request:
+        arguments:
+          id: 1
+      response:
+        data:
+          deleteUser:
+            id: null
+    "User does not exist":
+      request:
+        arguments:
+          id: 200
+      response:
+        data:
+          deleteUser: null
+        errors:
+          message:
+            - missing
+
+Login:
+  root_type: 'mutation'
+  field: 'authenticateUser'
+  description:
+  - This will authenticate a user.
+  parameters:
+    email:
+      type: String
+      errors:
+        - non-existing
+        - missing
+    password:
+      type: String
+      errors:
+        - missing
+        - mismatch
+  examples:
+    "User is successfully authenticated":
+      request:
+        arguments:
+          email: jimmy@example.com
+          password: jimmy1
+      response:
+        data:
+          authenticateUser:
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoidW5kZWZpbmVkIHVuZGVmaW5lZCIsImV4cCI6MTQ2MzUxOTU5MiwiaWF0IjoxNDYyOTE0NzkyfQ.tqxKGlDLIA49fcIE4P6nEQTWyckIprWc2NeqiVFJ3W0
+    "User does not exist":
+      request:
+        arguments:
+          email: adsfasdfasdf@example.com
+          password: jimmy1
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            - missing
+    "Email is not given":
+      request:
+        arguments:
+          password: jimmy1
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            - missing
+    "Password is not given":
+      request:
+        arguments:
+          email: jimmy@example.com
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            - missing
