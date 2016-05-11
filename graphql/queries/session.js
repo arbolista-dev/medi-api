@@ -4,9 +4,9 @@ import {
 } from 'graphql'
 
 import sessionType from '../types/SessionType'
-import Session from '../../model/session/session'
+import SessionBase from '../../model/session/session.base'
 
-var SessionModel = new Session()
+var sessionBase = new SessionBase()
 
 const sessionQuery = {
   type: new GraphQLList(sessionType),
@@ -17,7 +17,7 @@ const sessionQuery = {
     }
   },
   resolve(root, args) {
-    return SessionModel.get(args.id)
+    return sessionBase.get(args.id)
   }
 }
 

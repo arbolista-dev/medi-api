@@ -3,9 +3,11 @@ import {
 } from 'graphql'
 
 import userType from '../types/UserType'
+
+import UserBase from '../../model/user/user.base'
 import User from '../../model/user/user'
 
-var UserModel = new User()
+var userBase = new UserBase()
 
 var userMutation = {
   addUser: {
@@ -25,7 +27,8 @@ var userMutation = {
       }
     },
     resolve(root, args) {
-      return UserModel.add(args)
+      let user = new User(args)
+      return user.create()
     }
   },
   updateUser: {
@@ -47,7 +50,7 @@ var userMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => UserModel.update(args)
+    resolve: (root, args) => userBase.update(args)
   },
   deleteUser: {
     type: userType,
@@ -56,7 +59,7 @@ var userMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => UserModel.delete(args.id)
+    resolve: (root, args) => userBase.delete(args.id)
   },
   authenticateUser: {
     type: userType,
@@ -69,7 +72,7 @@ var userMutation = {
       }
     },
     resolve(root, args) {
-      return UserModel.authenticate(args)
+      return userBase.authenticate(args)
     }
   }
 }

@@ -3,9 +3,11 @@ import {
 } from 'graphql'
 
 import sessionType from '../types/SessionType'
+
+import SessionBase from '../../model/session/session.base'
 import Session from '../../model/session/session'
 
-var SessionModel = new Session()
+var sessionBase = new SessionBase()
 
 var sessionMutation = {
   addSession: {
@@ -25,7 +27,8 @@ var sessionMutation = {
       }
     },
     resolve(root, args) {
-      return SessionModel.add(args)
+      let session = new Session(args)
+      return session.create()
     }
   },
   updateSession: {
@@ -41,7 +44,7 @@ var sessionMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => SessionModel.update(args)
+    resolve: (root, args) => sessionBase.update(args)
   },
   deleteSession: {
     type: sessionType,
@@ -50,7 +53,7 @@ var sessionMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => SessionModel.delete(args.id)
+    resolve: (root, args) => sessionBase.delete(args.id)
   }
 
 }

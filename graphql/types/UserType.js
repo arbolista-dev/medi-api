@@ -6,9 +6,9 @@ import {
 } from 'graphql'
 
 import sessionType from '../types/SessionType'
-import Session from '../../model/session/session'
+import SessionBase from '../../model/session/session.base'
 
-var SessionModel = new Session()
+let sessionBase = new SessionBase()
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -28,7 +28,7 @@ const UserType = new GraphQLObjectType({
     sessions: {
       type: new GraphQLList(sessionType),
       resolve(root, args) {
-        return SessionModel.getByUser(root.id)
+        return sessionBase.getByUser(root.id)
       }
     },
     token: {

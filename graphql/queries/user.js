@@ -4,9 +4,9 @@ import {
 } from 'graphql'
 
 import userType from '../types/UserType'
-import User from '../../model/user/user'
+import UserBase from '../../model/user/user.base'
 
-var UserModel = new User()
+var userBase = new UserBase()
 
 const userQuery = {
   type: new GraphQLList(userType),
@@ -17,7 +17,7 @@ const userQuery = {
     }
   },
   resolve(root, args) {
-    return UserModel.get(args.id)
+    return userBase.get(args.id)
   }
 }
 
