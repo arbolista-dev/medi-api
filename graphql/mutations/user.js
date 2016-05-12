@@ -1,5 +1,6 @@
 import {
-  GraphQLString
+  GraphQLString,
+  GraphQLInt
 } from 'graphql'
 
 import userType from '../types/UserType'
@@ -35,7 +36,7 @@ var userMutation = {
     type: userType,
     args: {
       id: {
-        type: GraphQLString
+        type: GraphQLInt
       },
       email: {
         type: GraphQLString
@@ -56,7 +57,7 @@ var userMutation = {
     type: userType,
     args: {
       id: {
-        type: GraphQLString
+        type: GraphQLInt
       }
     },
     resolve: (root, args) => userBase.delete(args.id)

@@ -18,10 +18,10 @@ const SessionType = new GraphQLObjectType({
       type: GraphQLString
     },
     duration_planned: {
-      type: GraphQLString
+      type: GraphQLInt
     },
     duration_success: {
-      type: GraphQLString
+      type: GraphQLInt
     },
     note: {
       type: GraphQLString

@@ -29,7 +29,7 @@ mutation {
 ### Update user
 
 mutation{
-  updateUser(id: "12", email: "new@test.com", first_name:"Thomas", password: "new_password") {
+  updateUser(id: 12, email: "new@test.com", first_name:"Thomas", password: "new_password") {
     id,
     email,
     first_name,
@@ -41,7 +41,7 @@ mutation{
 ### Delete user
 
 mutation {
-  deleteUser(id: "3") {
+  deleteUser(id: 3) {
     id
   }
 }
@@ -75,11 +75,42 @@ mutation {
   }
 }
 
+### Add session
+
+mutation {
+  addSession(user_id: 1, status: true, location: "In the forest", note: "Feeling good", date:"2016-04-27 04:05:06", duration_planned:600, duration_success: 600) {
+    id
+  }
+}
+
+
+
+### Update session
+
+mutation{
+  updateUser(id: 12, email: "new@test.com", first_name:"Thomas", password: "new_password") {
+    id,
+    email,
+    first_name,
+    last_name
+  }
+}
+
+
+### Delete session
+
+mutation {
+  deleteUser(id: 3) {
+    id
+  }
+}
+
 ### List all sessions
 
 {
   session {
     id
+    date
     duration_planned
     duration_success
     user {

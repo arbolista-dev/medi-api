@@ -1,5 +1,5 @@
 import {
-  GraphQLString,
+  GraphQLInt,
   GraphQLList
 } from 'graphql'
 
@@ -13,7 +13,7 @@ const userQuery = {
   args: {
     id: {
       name: 'id',
-      type: GraphQLString
+      type: GraphQLInt
     }
   },
   resolve(root, args) {

@@ -8,8 +8,8 @@ exports.up = function(pgm) {
     },
     status: 'boolean',
     date: 'timestamp',
-    duration_planned: 'interval',
-    duration_success: 'interval',
+    duration_planned: 'integer',
+    duration_success: 'integer',
     location: 'varchar(50)',
     note: 'varchar(255)'
   });

@@ -1,5 +1,5 @@
 import {
-  GraphQLString,
+  GraphQLInt,
   GraphQLList
 } from 'graphql'
 
@@ -13,7 +13,7 @@ const sessionQuery = {
   args: {
     id: {
       name: 'id',
-      type: GraphQLString
+      type: GraphQLInt
     }
   },
   resolve(root, args) {
