@@ -7,13 +7,23 @@ class SessionBase {
       return db.any('SELECT * FROM sessions WHERE id= $1', id)
         .then((data) => {
           console.log('Get session', data)
-          return data
+          if (data[0] == null) {
+            return new Error('Specified session not found')
+          } else {
+            return data
+          }
+        })
+        .catch((error) => {
+          return new Error('Session retrieval error: ', error)
         })
     } else {
       return db.any('SELECT * FROM sessions')
         .then((data) => {
           console.log('List sessions', data)
           return data
+        })
+        .catch((error) => {
+          return new Error('Session listing error: ', error)
         })
     }
   }
@@ -24,6 +34,9 @@ class SessionBase {
         console.log('Get sessions for user', data)
         return data
       })
+      .catch((error) => {
+        return new Error('Error getting sessions by user: ', error)
+      })
   }
 
   update(data) {
@@ -33,6 +46,9 @@ class SessionBase {
         console.log('Updated session with ID:', result.rows)
         return result.rows[0]
       })
+      .catch((error) => {
+        return new Error('Session update error: ', error)
+      })
   }
 
   delete(id) {
@@ -40,6 +56,10 @@ class SessionBase {
       .then((result) => {
         console.log('Deleted session with ID:', id)
         return result
+      })
+      .catch((error) => {
+        console.log(error)
+        return new Error('Session deletion error: ', error)
       })
   }
 }

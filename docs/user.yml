@@ -103,6 +103,7 @@ Add:
 Update:
   root_type: 'mutation'
   field: 'updateUser'
+  authorized: true
   description:
   - This will update an existing user account.
   parameters:
@@ -172,6 +173,7 @@ Update:
 Delete:
   root_type: 'mutation'
   field: 'deleteUser'
+  authorized: true
   description:
   - This will delete a User account.
   parameters:
@@ -199,69 +201,11 @@ Delete:
           message:
             - missing
 
-Login:
+Authenticate:
   root_type: 'mutation'
-  field: 'loginUser'
+  field: 'authenticateUser'
   description:
   - This will authenticate a user.
-  parameters:
-    email:
-      type: String
-      errors:
-        - non-existing
-        - missing
-    password:
-      type: String
-      errors:
-        - missing
-        - mismatch
-  examples:
-    "User is successfully authenticated":
-      request:
-        arguments:
-          email: jimmy@example.com
-          password: jimmy1
-      response:
-        data:
-          authenticateUser:
-            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoidW5kZWZpbmVkIHVuZGVmaW5lZCIsImV4cCI6MTQ2MzUxOTU5MiwiaWF0IjoxNDYyOTE0NzkyfQ.tqxKGlDLIA49fcIE4P6nEQTWyckIprWc2NeqiVFJ3W0
-    "User does not exist":
-      request:
-        arguments:
-          email: adsfasdfasdf@example.com
-          password: jimmy1
-      response:
-        data:
-          authenticateUser: null
-        errors:
-          message:
-            - missing
-    "Email is not given":
-      request:
-        arguments:
-          password: jimmy1
-      response:
-        data:
-          authenticateUser: null
-        errors:
-          message:
-            - missing
-    "Password is not given":
-      request:
-        arguments:
-          email: jimmy@example.com
-      response:
-        data:
-          authenticateUser: null
-        errors:
-          message:
-            - missing
-
-Logout:
-  root_type: 'mutation'
-  field: 'logoutUser'
-  description:
-  - This will log the user out.
   parameters:
     email:
       type: String

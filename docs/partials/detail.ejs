@@ -1,136 +1,133 @@
 <% include ./header %>
 
 <div class="page-header">
-    <h1>Medi App API</h1>
+    <h1><a href="/docs/">Medi App API</a></h1>
     <p class="lead">The following methods are available:</p>
 </div>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <% for(var method in model){ %>
+    <% Object.keys(model).forEach(function(method) { %>
         <div class="panel panel-default">
             <div class="panel-heading" role="tab">
                 <h4 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#method_<%= method %>">
                         <b><%= method %></b>
                         -
-                        <i><%= method['root_type'] %>
-                            <%= method['field'] %></i>
+                        <i><%= model[method]['root_type'] %>
+                            <%= model[method]['field'] %></i>
                     </a>
                 </h4>
             </div>
             <div id="method_<%= method %>" class="panel-collapse collapse" role="tabpanel">
-                <% for(var props in method){ %>
-                    <div class="panel-body">
-                        <% if(props['authorized']) {%>
-                            <div>
-                                <span class="label label-danger">Authorization Required</span>
+                <div class="panel-body">
+                    <% if(model[method]['authorized']) {%>
+                        <div>
+                            <span class="label label-danger">Authorization Required</span>
+                        </div>
+                    <% } %>
+                    <% if(model[method]['description']) {%>
+                        <p><%= model[method]['description'] %></p>
+                    <% } %>
+                    <% if(model[method]['parameters']) {%>
+                        <h4>Parameters</h4>
+                        <table class="table">
+                            <% for(var param in model[method]['parameters']) { %>
+                                <tr>
+                                    <td><%= param %></td>
+                                    <td>
+                                        <dl>
+                                            <dt>Type</dt>
+                                            <dd><%= param['type']%></dd>
+                                            <% if(param['errors']) { %>
+                                                <dt>Errors</dt>
+                                                <% for (var type in param['errors']) {%>
+                                                    <dd><%= type %></dd>
+                                                <% } %>
+                                            <% } %>
+                                            <% if(param['default']) { %>
+                                                <dt>Default</dt>
+                                                <dd><%= param['default'] %></dd>
+                                            <% } %>
+                                            <% if(param['notes']) { %>
+                                                <dt>Errors</dt>
+                                                <% for (var note in param['notes']) { %>
+                                                    <dd><%= note %></dd>
+                                                <% } %>
+                                            <% } %>
+                                        </dl>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        </table>
+                    <% } %>
+                    <% if(model[method]['errors']) { %>
+                        <div class="alert alert-danger">
+                            <h4>Route Errors</h4>
+                            <ul>
+                                <% for (var error in model[method]['errors']) { %>
+                                    <li><%= error %></li>
+                                <% } %>
                             </div>
                         <% } %>
-                        <% if(props['notes']) {%>
-                            <% for(var note in props['notes']) { %>
-                                <p><%= note %></p>
-                            <% } %>
-                        <% } %>
-                        <% if(props['parameters']) {%>
-                            <h4>Parameters</h4>
-                            <table class="table">
-                                <% for(var param in props['parameters']) { %>
-                                    <tr>
-                                        <td><%= param %></td>
-                                        <td>
-                                            <dl>
-                                                <dt>Type</dt>
-                                                <dd><%= info['type']%></dd>
-                                                <% if(info['errors']) { %>
-                                                    <dt>Errors</dt>
-                                                    <% for (var type in info['errors']) {%>
-                                                        <dd><%= type %></dd>
-                                                    <% } %>
-                                                <% } %>
-                                                <% if(info['default']) { %>
-                                                    <dt>Default</dt>
-                                                    <dd><%= info['default'] %></dd>
-                                                <% } %>
-                                                <% if(info['notes']) { %>
-                                                    <dt>Errors</dt>
-                                                    <% for (var note in info['notes']) { %>
-                                                        <dd><%= note %></dd>
-                                                    <% } %>
-                                                <% } %>
-                                            </dl>
-                                        </td>
-                                    </tr>
-                                <% } %>
-                            </table>
-                        <% } %>
-                        <% if(props['errors']) { %>
-                            <div class="alert alert-danger">
-                                <h4>Route Errors</h4>
-                                <ul>
-                                    <% for (var error in props['errors']) { %>
-                                        <li><%= error %></li>
-                                    <% } %>
-                                </div>
-                        <% } %>
                         <h4>Examples</h4>
-                            <% for(var example_title in props['examples']) { %>
-                                <h5>
-                                    <u><%= example_title %></u>
-                                </h5>
-                                <% if(details['notes']) { %>
-                                    <% for(var note in details['notes']) { %>
-                                        <p><%= note %></p>
-                                    <% } %>
+                        <% for(var example in model[method]['examples']) { %>
+                            <h5>
+                                <u><%= example %></u>
+                            </h5>
+                            <% if(example['notes']) { %>
+                                <% for(var note in example['notes']) { %>
+                                    <p><%= note %></p>
                                 <% } %>
-                                <i>Request</i><br/>
-                                <% if(details['request']) { %>
-                                    <% if(details['request']['headers']) { %>
-                                        <small>
-                                            <i>Headers</i>
-                                        </small>
-                                        <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(details['request']['headers'], null, 2) %></div>
-                                        </pre>
-                                    <% } else {%>
-                                        <p>No request headers.</p>
-                                    <% } %>
-                                    <% if(details['request']['params']) { %>
-                                        <small>
-                                            <i>Params</i>
-                                        </small>
-                                        <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(details['request']['params'], null, 2) %></div>
-                                        </pre>
-                                    <% } else { %>
-                                        <p>No request parameters.</p>
-                                    <% } %>
+                            <% } %>
+                            <i>Request</i><br/>
+                            <% if(example['request']) { %>
+                                <% if(example['request']['headers']) { %>
                                     <small>
-                                        <i>Body</i>
+                                        <i>Headers</i>
                                     </small>
-                                    <% if(details['request']['body']) { %>
-                                        <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(details['request']['body'], null, 2) %></div>
+                                    <pre style="max-height:400px;overflow-y:scroll;">
+                                          <div><%= JSON.stringify(example['request']['headers'], null, 2) %></div>
                                         </pre>
-                                    <% } else { %>
-                                        <p>No request body.</p>
-                                    <% } %>
+                                <% } else {%>
+                                    <p>No request headers.</p>
                                 <% } %>
+                                <% if(example['request']['params']) { %>
+                                    <small>
+                                        <i>Params</i>
+                                    </small>
+                                    <pre style="max-height:400px;overflow-y:scroll;">
+                                          <div><%= JSON.stringify(example['request']['params'], null, 2) %></div>
+                                        </pre>
+                                <% } else { %>
+                                    <p>No request parameters.</p>
+                                <% } %>
+                                <small>
+                                    <i>Body</i>
+                                </small>
+                                <% if(example['request']['body']) { %>
+                                    <pre style="max-height:400px;overflow-y:scroll;">
+                                          <div><%= JSON.stringify(example['request']['body'], null, 2) %></div>
+                                        </pre>
+                                <% } else { %>
+                                    <p>No request body.</p>
+                                <% } %>
+                            <% } %>
+                            <% if(example['response']) { %>
                                 <i>Response</i><br/>
-                                <div class="alert alert-<%= details['response']['code'].to_i < 400 ? 'success' : 'danger' %>">
-                                    <b><%= details['response']['code'] %></b><br/>
-                                    <% if(details['response']['body']) { %>
+                                <div class="alert alert-<%= example['response']['data']['errors'] ? 'danger' : 'success' %>">
+                                    <% if(example['response']['data']) { %>
                                         <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(details['response']['body'], null, 2) %></div>
+                                          <div><%= JSON.stringify(example['response']['data'], null, 2) %></div>
                                         </pre>
                                     <% } else { %>
-                                        <p>No response body.</p>
+                                        <p>No response data.</p>
                                     <% } %>
                                 </div>
                             <% } %>
+                        <% } %>
                     </div>
-                <% } %>
+                </div>
             </div>
-        </div>
-    <% } %>
-</div>
-<% include ./footer %>
+        <% }) %>
+    </div>
+    <% include ./footer %>

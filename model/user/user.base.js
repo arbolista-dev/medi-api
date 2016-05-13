@@ -1,14 +1,18 @@
 import db from '../../db/config'
 import { hashPassword, getHashByUserId, checkPassword, generateJwt } from './user.helper'
 
-class User {
+class UserBase {
 
   get(id) {
     if (id) {
       return db.any('SELECT * FROM users WHERE id= $1', id)
         .then((data) => {
           console.log('Get user', data)
-          return data
+          if (data[0] == null) {
+            return new Error('Specified user not found')
+          } else {
+            return data
+          }
         })
         .catch((error) => {
           return new Error('User retrieval error: ', error)
@@ -32,13 +36,12 @@ class User {
           console.log('Get user by email', data)
           if (data[0] == null) {
             return new Error('Specified user not found')
-            return
           } else {
             return data
           }
         })
         .catch((error) => {
-          return new Error('Specified user not found.')
+          return new Error('Error getting user by email.')
         })
     } else {
       return new Error('No email address specified.')
@@ -125,4 +128,4 @@ class User {
   }
 }
 
-export default User
+export default UserBase

@@ -14,14 +14,13 @@ class Session {
 
   create() {
     return db.one('INSERT INTO sessions (user_id, status, date, duration_planned, duration_success, location, note) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id', [this.user_id, this.status, this.date, this.duration_planned, this.duration_success, this.location, this.note])
-      .then((data) => {
-        console.log('Created session:', data)
-        return data
-      }).catch((error) => {
-        return error
-      })
+              .then((data) => {
+                console.log('Created session:', data)
+                return data
+              }).catch((error) => {
+                return error
+              })
   }
-
 }
 
 export default Session
