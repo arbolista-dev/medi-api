@@ -4,7 +4,7 @@ import {
   GraphQLInt
 } from 'graphql'
 
-import sessionType from '../types/SessionType'
+import sessionType from '../types/session'
 
 import SessionBase from '../../model/session/session.base'
 import Session from '../../model/session/session'

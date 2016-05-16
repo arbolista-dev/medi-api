@@ -3,7 +3,7 @@ import {
   GraphQLList
 } from 'graphql'
 
-import userType from '../types/UserType'
+import userType from '../types/user'
 import UserBase from '../../model/user/user.base'
 
 var userBase = new UserBase()

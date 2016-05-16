@@ -3,7 +3,7 @@ import {
   GraphQLInt
 } from 'graphql'
 
-import userType from '../types/UserType'
+import userType from '../types/user'
 
 import UserBase from '../../model/user/user.base'
 import User from '../../model/user/user'
