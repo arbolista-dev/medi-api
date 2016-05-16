@@ -1,7 +1,6 @@
 import {
   GraphQLInt,
-  GraphQLList,
-  GraphQLString
+  GraphQLList
 } from 'graphql'
 
 import userType from '../types/UserType'

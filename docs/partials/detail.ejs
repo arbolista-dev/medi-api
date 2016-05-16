@@ -6,17 +6,17 @@
 </div>
 
 <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <% Object.keys(model).forEach(function(method) { %>
+    <% for(var method in model) { %>
         <div class="panel panel-default">
             <div class="panel-heading" role="tab">
-                <h4 class="panel-title">
+                <h2 class="panel-title">
                     <a role="button" data-toggle="collapse" data-parent="#accordion" href="#method_<%= method %>">
                         <b><%= method %></b>
                         -
                         <i><%= model[method]['root_type'] %>
                             <%= model[method]['field'] %></i>
                     </a>
-                </h4>
+                </h2>
             </div>
             <div id="method_<%= method %>" class="panel-collapse collapse" role="tabpanel">
                 <div class="panel-body">
@@ -29,7 +29,7 @@
                         <p><%= model[method]['description'] %></p>
                     <% } %>
                     <% if(model[method]['parameters']) {%>
-                        <h4>Parameters</h4>
+                        <h3>Parameters</h3>
                         <table class="table">
                             <% for(var param in model[method]['parameters']) { %>
                                 <tr>
@@ -37,22 +37,16 @@
                                     <td>
                                         <dl>
                                             <dt>Type</dt>
-                                            <dd><%= param['type']%></dd>
-                                            <% if(param['errors']) { %>
+                                            <dd><%= model[method]['parameters'][param]['type']%></dd>
+                                        </dl>
+                                    </td>
+                                    <td>
+                                      <dl>
+                                            <% if(model[method]['parameters'][param]['errors']) { %>
                                                 <dt>Errors</dt>
-                                                <% for (var type in param['errors']) {%>
-                                                    <dd><%= type %></dd>
-                                                <% } %>
-                                            <% } %>
-                                            <% if(param['default']) { %>
-                                                <dt>Default</dt>
-                                                <dd><%= param['default'] %></dd>
-                                            <% } %>
-                                            <% if(param['notes']) { %>
-                                                <dt>Errors</dt>
-                                                <% for (var note in param['notes']) { %>
-                                                    <dd><%= note %></dd>
-                                                <% } %>
+                                                <% model[method]['parameters'][param]['errors'].forEach(function(type) {%>
+                                                  <dd><%= type %></dd>
+                                                <% }) %>
                                             <% } %>
                                         </dl>
                                     </td>
@@ -62,62 +56,47 @@
                     <% } %>
                     <% if(model[method]['errors']) { %>
                         <div class="alert alert-danger">
-                            <h4>Route Errors</h4>
+                            <h3>Route Errors</h3>
                             <ul>
                                 <% for (var error in model[method]['errors']) { %>
                                     <li><%= error %></li>
                                 <% } %>
                             </div>
                         <% } %>
-                        <h4>Examples</h4>
+                        <h3>Examples</h3>
                         <% for(var example in model[method]['examples']) { %>
-                            <h5>
-                                <u><%= example %></u>
-                            </h5>
-                            <% if(example['notes']) { %>
-                                <% for(var note in example['notes']) { %>
+                            <h4>
+                                <u><b><%= example %></b></u>
+                            </h4>
+                            <% if(model[method]['examples'][example]['notes']) { %>
+                                <% for(var note in model[method]['examples'][example]['notes']) { %>
                                     <p><%= note %></p>
                                 <% } %>
                             <% } %>
-                            <i>Request</i><br/>
-                            <% if(example['request']) { %>
-                                <% if(example['request']['headers']) { %>
-                                    <small>
-                                        <i>Headers</i>
-                                    </small>
-                                    <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(example['request']['headers'], null, 2) %></div>
-                                        </pre>
-                                <% } else {%>
-                                    <p>No request headers.</p>
-                                <% } %>
-                                <% if(example['request']['params']) { %>
-                                    <small>
-                                        <i>Params</i>
-                                    </small>
-                                    <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(example['request']['params'], null, 2) %></div>
-                                        </pre>
-                                <% } else { %>
-                                    <p>No request parameters.</p>
-                                <% } %>
-                                <small>
-                                    <i>Body</i>
-                                </small>
-                                <% if(example['request']['body']) { %>
-                                    <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(example['request']['body'], null, 2) %></div>
-                                        </pre>
-                                <% } else { %>
-                                    <p>No request body.</p>
-                                <% } %>
+                            <h5>Request</h5><br/>
+                            <% if(model[method]['examples'][example]['request']) { %>
+                              <p>
+                                  <i>Query</i>
+                              </p>
+                              <div>
+                                <%= model[method]['root_type'] %> { <%= model[method]['field'] %> (
+                                    <% for(var variable in model[method]['examples'][example]['request']['query_variables']) { %>
+                                        <%= variable %>: "<%= model[method]['examples'][example]['request']['query_variables'][variable] %>",
+                                    <% } %>
+                                    ) {
+                                      <% for(var response_param in model[method]['examples'][example]['response']['data'][model[method]['field']]) { %>
+                                          <%= response_param %>
+                                      <% } %>
+                                    }
+                                  }
+                              </div>
                             <% } %>
-                            <% if(example['response']) { %>
-                                <i>Response</i><br/>
-                                <div class="alert alert-<%= example['response']['data']['errors'] ? 'danger' : 'success' %>">
-                                    <% if(example['response']['data']) { %>
+                            <% if(model[method]['examples'][example]['response']) { %>
+                                <h5>Response</h5><br/>
+                                <div class="alert alert-<%= model[method]['examples'][example]['response']['data']['errors'] ? 'danger' : 'success' %>">
+                                    <% if(model[method]['examples'][example]['response']['data']) { %>
                                         <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(example['response']['data'], null, 2) %></div>
+                                          <div><%= JSON.stringify(model[method]['examples'][example]['response']['data'], null, 2) %></div>
                                         </pre>
                                     <% } else { %>
                                         <p>No response data.</p>
@@ -128,6 +107,6 @@
                     </div>
                 </div>
             </div>
-        <% }) %>
+        <% } %>
     </div>
     <% include ./footer %>
