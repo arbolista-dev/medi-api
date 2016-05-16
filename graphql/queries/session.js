@@ -1,5 +1,6 @@
 import {
   GraphQLInt,
+  GraphQLString,
   GraphQLList
 } from 'graphql'
 
@@ -12,12 +13,20 @@ const sessionQuery = {
   type: new GraphQLList(sessionType),
   args: {
     id: {
-      name: 'id',
       type: GraphQLInt
+    },
+    user_id: {
+      type: GraphQLInt
+    },
+    start_date: {
+      type: GraphQLString
+    },
+    end_date: {
+      type: GraphQLString
     }
   },
   resolve(root, args) {
-    return sessionBase.get(args.id)
+    return sessionBase.get(args)
   }
 }
 

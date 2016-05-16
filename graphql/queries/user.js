@@ -1,6 +1,7 @@
 import {
   GraphQLInt,
-  GraphQLList
+  GraphQLList,
+  GraphQLString
 } from 'graphql'
 
 import userType from '../types/UserType'
@@ -12,7 +13,6 @@ const userQuery = {
   type: new GraphQLList(userType),
   args: {
     id: {
-      name: 'id',
       type: GraphQLInt
     }
   },

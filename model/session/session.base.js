@@ -2,11 +2,58 @@ import db from '../../db/config'
 
 class SessionBase {
 
-  get(id) {
-    if (id) {
-      return db.any('SELECT * FROM sessions WHERE id= $1', id)
+  get(args) {
+    if (args.id) {
+      return this.getByID(args.id)
+    } else if(args.user_id) {
+      return this.getByUser(args.user_id, args.start_date, args.end_date)
+    } else {
+      return this.getAll(args.start_date, args.end_date)
+    }
+  }
+
+  getByID(id) {
+    return db.any('SELECT * FROM sessions WHERE id= $1', id)
+      .then((data) => {
+        console.log('Get session', data)
+        if (data[0] == null) {
+          return new Error('Specified session not found')
+        } else {
+          return data
+        }
+      })
+      .catch((error) => {
+        return new Error('Session retrieval error: ', error)
+      })
+  }
+
+  getByUser(user_id, start, end) {
+    if (start && end) {
+      return db.any('SELECT * FROM sessions WHERE user_id= $1 AND date >= $2::timestamp AND date <= $3::timestamp', [user_id, start, end])
         .then((data) => {
-          console.log('Get session', data)
+          console.log('Get sessions for user', data)
+          return data
+        })
+        .catch((error) => {
+          return new Error('Error getting sessions by user: ', error)
+        })
+    } else {
+      return db.any('SELECT * FROM sessions WHERE user_id= $1', user_id)
+        .then((data) => {
+          console.log('Get sessions for user', data)
+          return data
+        })
+        .catch((error) => {
+          return new Error('Error getting sessions by user: ', error)
+        })
+    }
+  }
+
+  getAll(start, end) {
+    if (start && end) {
+      return db.any('SELECT * FROM sessions WHERE date >= $1::timestamp AND date <= $2::timestamp', [start, end])
+        .then((data) => {
+          console.log('List session within date range', data)
           if (data[0] == null) {
             return new Error('Specified session not found')
           } else {
@@ -14,6 +61,7 @@ class SessionBase {
           }
         })
         .catch((error) => {
+          console.log(error)
           return new Error('Session retrieval error: ', error)
         })
     } else {
@@ -26,17 +74,6 @@ class SessionBase {
           return new Error('Session listing error: ', error)
         })
     }
-  }
-
-  getByUser(user_id) {
-    return db.any('SELECT * FROM sessions WHERE user_id= $1', user_id)
-      .then((data) => {
-        console.log('Get sessions for user', data)
-        return data
-      })
-      .catch((error) => {
-        return new Error('Error getting sessions by user: ', error)
-      })
   }
 
   update(data) {
