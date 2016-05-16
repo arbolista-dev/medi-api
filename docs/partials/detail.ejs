@@ -73,36 +73,47 @@
                                     <p><%= note %></p>
                                 <% } %>
                             <% } %>
-                            <h5>Request</h5><br/>
-                            <% if(model[method]['examples'][example]['request']) { %>
-                              <p>
-                                  <i>Query</i>
-                              </p>
-                              <div>
-                                <%= model[method]['root_type'] %> { <%= model[method]['field'] %> (
-                                    <% for(var variable in model[method]['examples'][example]['request']['query_variables']) { %>
-                                        <%= variable %>: "<%= model[method]['examples'][example]['request']['query_variables'][variable] %>",
-                                    <% } %>
-                                    ) {
-                                      <% for(var response_param in model[method]['examples'][example]['response']['data'][model[method]['field']]) { %>
-                                          <%= response_param %>
+                            <div class="jumbotron">
+                              <p>Request</p>
+                              <% if(model[method]['examples'][example]['request']) { %>
+                                <small>
+                                    <i>Query:</i>
+                                </small>
+                                <div>
+                                  <%= model[method]['root_type'] %> { <%= model[method]['field'] %> (
+                                      <% for(var variable in model[method]['examples'][example]['request']['query_variables']) { %>
+                                          <%= variable %>: "<%= model[method]['examples'][example]['request']['query_variables'][variable] %>",
                                       <% } %>
+                                      ) {
+                                        <% for(var response_param in model[method]['examples'][example]['response']['data'][model[method]['field']]) { %>
+                                            <%= response_param %>
+                                        <% } %>
+                                      }
                                     }
-                                  }
-                              </div>
-                            <% } %>
-                            <% if(model[method]['examples'][example]['response']) { %>
-                                <h5>Response</h5><br/>
-                                <div class="alert alert-<%= model[method]['examples'][example]['response']['data']['errors'] ? 'danger' : 'success' %>">
-                                    <% if(model[method]['examples'][example]['response']['data']) { %>
-                                        <pre style="max-height:400px;overflow-y:scroll;">
-                                          <div><%= JSON.stringify(model[method]['examples'][example]['response']['data'], null, 2) %></div>
-                                        </pre>
-                                    <% } else { %>
-                                        <p>No response data.</p>
-                                    <% } %>
                                 </div>
-                            <% } %>
+                              <% } else { %>
+                                <p>
+                                  No request.
+                                </p>
+                              <% } %>
+                            </div>
+
+                            <div class="jumbotron alert alert-<%= model[method]['examples'][example]['response']['errors'] ? 'danger' : 'success' %>">
+                              <p>Response</p>
+                              <% if(model[method]['examples'][example]['response']) { %>
+                                  <div>
+                                      <% if(model[method]['examples'][example]['response']) { %>
+                                          <pre style="max-height:400px;overflow-y:scroll;">
+                                            <div><%= JSON.stringify(model[method]['examples'][example]['response'], null, 2) %></div>
+                                          </pre>
+                                      <% } else { %>
+                                          <p>No response data.</p>
+                                      <% } %>
+                                  </div>
+                              <% } else { %>
+                                No response.
+                              <% } %>
+                            </div>
                         <% } %>
                     </div>
                 </div>
