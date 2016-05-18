@@ -28,6 +28,7 @@ var userMutation = {
       }
     },
     resolve(root, args) {
+      console.log(args)
       let user = new User(args)
       return user.create()
     }
