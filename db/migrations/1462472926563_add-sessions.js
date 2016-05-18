@@ -7,7 +7,7 @@ exports.up = function(pgm) {
       onDelete: 'cascade'
     },
     status: 'boolean',
-    date: 'timestamp',
+    date: 'integer',
     duration_planned: 'integer',
     duration_success: 'integer',
     location: 'varchar(50)',

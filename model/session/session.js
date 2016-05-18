@@ -1,11 +1,12 @@
 import db from '../../db/config'
+import { stringDatetoInt } from './session.helper'
 
 class Session {
 
   constructor(props) {
     this.user_id = props.user_id
     this.status = props.status
-    this.date = props.date
+    this.date = stringDatetoInt(props.date)
     this.duration_planned = props.duration_planned
     this.duration_success = props.duration_success
     this.location = props.location

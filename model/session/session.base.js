@@ -1,4 +1,5 @@
 import db from '../../db/config'
+import { intToDateString, stringDatetoInt } from './session.helper'
 
 class SessionBase {
 
@@ -13,23 +14,26 @@ class SessionBase {
   }
 
   getByID(id) {
-    return db.any('SELECT * FROM sessions WHERE id= $1', id)
+    return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE id= $1', id)
       .then((data) => {
-        console.log('Get session', data)
         if (data[0] == null) {
           return new Error('Specified session not found')
         } else {
+          console.log('Get session', data)
           return data
         }
       })
       .catch((error) => {
+        console.log(error)
         return new Error('Session retrieval error: ', error)
       })
   }
 
   getByUser(user_id, start, end) {
     if (start && end) {
-      return db.any('SELECT * FROM sessions WHERE user_id= $1 AND date >= $2::timestamp AND date <= $3::timestamp', [user_id, start, end])
+      let _start = stringDatetoInt(start)
+      let _end = stringDatetoInt(end)
+      return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1 AND date >= $2 AND date <= $3', [user_id, _start, _end])
         .then((data) => {
           console.log('Get sessions for user', data)
           return data
@@ -38,7 +42,7 @@ class SessionBase {
           return new Error('Error getting sessions by user: ', error)
         })
     } else {
-      return db.any('SELECT * FROM sessions WHERE user_id= $1', user_id)
+      return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1', user_id)
         .then((data) => {
           console.log('Get sessions for user', data)
           return data
@@ -51,7 +55,9 @@ class SessionBase {
 
   getAll(start, end) {
     if (start && end) {
-      return db.any('SELECT * FROM sessions WHERE date >= $1::timestamp AND date <= $2::timestamp', [start, end])
+      let _start = stringDatetoInt(start)
+      let _end = stringDatetoInt(end)
+      return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE date >= $1 AND date <= $2', [_start, _end])
         .then((data) => {
           console.log('List session within date range', data)
           if (data[0] == null) {
@@ -65,7 +71,7 @@ class SessionBase {
           return new Error('Session retrieval error: ', error)
         })
     } else {
-      return db.any('SELECT * FROM sessions')
+      return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions')
         .then((data) => {
           console.log('List sessions', data)
           return data
@@ -78,7 +84,7 @@ class SessionBase {
 
   update(data) {
     console.log('data is:', data)
-    return db.result('UPDATE sessions SET status = COALESCE($2, status), user_id = COALESCE($3, user_id), date = COALESCE($4, date), location = COALESCE($5, location), note = COALESCE($6, note), duration_success = COALESCE($7, duration_success) WHERE id = $1 RETURNING id, status, user_id, date, note, duration_success, status', [data.id, data.status, data.user_id, data.date, data.location, data.note, data.duration_success])
+    return db.result('UPDATE sessions SET status = COALESCE($2, status), user_id = COALESCE($3, user_id), date = COALESCE($4::integer, date), location = COALESCE($5, location), note = COALESCE($6, note), duration_success = COALESCE($7, duration_success) WHERE id = $1 RETURNING id, status, user_id, date, note, duration_success, status', [data.id, data.status, data.user_id, data.date, data.location, data.note, data.duration_success])
       .then((result) => {
         console.log('Updated session with ID:', result.rows)
         return result.rows[0]
