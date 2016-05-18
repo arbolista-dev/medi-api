@@ -63,8 +63,17 @@ class UserBase {
     this.beforeUpdate(data)
     return db.result('UPDATE users SET email = COALESCE($2, email), first_name = COALESCE($3, first_name), last_name = COALESCE($4, last_name), hash = COALESCE($5, hash) WHERE id = $1 RETURNING email, id, first_name, last_name', [data.id, data.email, data.first_name, data.last_name, data.hash])
       .then((result) => {
-        console.log('Updated user:', result.rows)
-        return result.rows[0]
+        if(result.rowCount === 0) {
+          return new Error('User does not exist.')
+        } else {
+          let user = {}
+          console.log(result.rows[0])
+          user = result.rows[0]
+          let payload = { first_name: result.first_name, last_name: result.last_name }
+          user.token = generateJwt(result.id, payload)
+          console.log('Updated user:', user)
+          return user
+        }
       })
       .catch((error) => {
         return new Error('User update error: ', error)

@@ -13,13 +13,13 @@ class User {
   create() {
     return hashPassword(this.password).then(hash => {
       return db.one('INSERT INTO users (email, first_name, last_name, hash) VALUES ($1, $2, $3, $4) RETURNING id, email, first_name, last_name', [this.email, this.first_name, this.last_name, hash])
-        .then((user) => {
-          let result = {}
-          result = user
+        .then((result) => {
+          let user = {}
+          user = result
           let payload = { first_name: this.first_name, last_name: this.last_name }
-          result.token = generateJwt(user.id, payload)
-          console.log('Created user: ', result)
-          return result
+          user.token = generateJwt(result.id, payload)
+          console.log('Created user: ', user)
+          return user
         })
         .catch((error) => {
           switch (error.code) {
