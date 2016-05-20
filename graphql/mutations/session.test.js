@@ -59,7 +59,6 @@ describe('Session mutations', () => {
       var mutation = 'mutation { updateSession ( id: 3, user_id: 3, status: true, location: "At home updated by test", note: "Feeling", date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)", duration_planned: 600, duration_success: 600 ) { id } }'
 
       let result = api(mutation).then(result => {
-        console.log('suc update', result)
         return result
         done()
       }).catch(err => console.log(err))
@@ -81,7 +80,6 @@ describe('Session mutations', () => {
       }).catch(err => console.log(err))
 
       result.then(res => {
-        console.log(res)
         res.data.should.have.property('updateSession').null
         res.errors[0].should.have.property('message')
         done()

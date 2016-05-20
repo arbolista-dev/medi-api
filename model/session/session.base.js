@@ -35,8 +35,12 @@ class SessionBase {
       let _end = stringDateToInt(end)
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1 AND date >= $2 AND date <= $3', [user_id, _start, _end])
         .then((data) => {
-          console.log('Get sessions for user', data)
-          return data
+          if (data[0] == null) {
+            return new Error('No sessions found')
+          } else {
+            console.log('Get sessions for user', data)
+            return data
+          }
         })
         .catch((error) => {
           return new Error('Error getting sessions by user: ', error)

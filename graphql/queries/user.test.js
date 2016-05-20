@@ -19,32 +19,81 @@ function api(query) {
 
 describe('User queries', () => {
 
-  describe('get users', (done) => {
+  describe('#get one user by id', (done) => {
 
-    var query = 'query { user(id:1) { id email first_name last_name } }'
-    let result = api(query).then(result => {
-      console.log('user query result', result)
-      return result
-      done()
-    }).catch(err => console.log(err))
+    it('successfully returns valid data', (done) => {
 
-    it('returns valid data', (done) => {
-      result.then(res => {
+      var query = 'query { user(id:2) { id email first_name last_name } }'
+      let result = api(query).then(result => {
+        return result
+        done()
+      }).catch(err => console.log(err))
+
+      result.then((res) => {
         res.should.have.property('data')
+        res.should.not.have.property('errors')
+        res.data.user.should.have.deep.property('[0].id', 2)
+        res.data.user.should.have.deep.property('[0].email')
+        res.data.user.should.have.deep.property('[0].first_name')
+        res.data.user.should.have.deep.property('[0].last_name')
         done()
       }).catch(err => console.log(err))
     })
 
-    it('contains valid id', (done) => {
-      result.then(res => {
-        // console.log('contains valid id RESULT', res.data.user[0].id)
-        res.data.user[0].id.should.equal(1)
-        // res.should.have.deep.property('data.user.id', '1')
-        // console.log(data.user)
-        // expect(res).to.have.deep.property('data.user.id', '1')
-        // expect(res).to.deep.contain({id: 1})
-        // expect(res).to.have.any.keys('id', 'email');
+    it('successfully returns valid data including sessions', (done) => {
 
+      var query = 'query { user(id:2) { id email first_name last_name sessions { id status date duration_planned duration_success location note } } }'
+      let result = api(query).then(result => {
+        return result
+        done()
+      }).catch(err => console.log(err))
+
+      result.then(res => {
+        res.should.have.property('data')
+        res.should.not.have.property('errors')
+        res.data.user.should.have.deep.property('[0].id', 2)
+        res.data.user.should.have.deep.property('[0].email')
+        res.data.user.should.have.deep.property('[0].first_name')
+        res.data.user.should.have.deep.property('[0].last_name')
+        res.data.user.should.have.deep.property('[0].sessions[0].id')
+        done()
+      }).catch(err => console.log(err))
+    })
+
+    it('returns error if user does not exist', (done) => {
+
+      var query = 'query { user(id:9999) { id email first_name last_name } }'
+      let result = api(query).then(result => {
+        return result
+        done()
+      }).catch(err => console.log(err))
+
+      result.then(res => {
+        res.should.have.property('data')
+        res.should.have.property('errors')
+        // res.errors[0].should.have.property('message')
+        done()
+      }).catch(err => console.log(err))
+    })
+  })
+
+  describe('#get all users', (done) => {
+    it('successfully returns valid data', (done) => {
+
+      var query = 'query { user { id email first_name last_name } }'
+      let result = api(query).then(result => {
+        return result
+        done()
+      }).catch(err => console.log(err))
+
+      result.then(res => {
+        res.should.have.property('data')
+        res.should.not.have.property('errors')
+        res.data.user.should.have.lengthOf(3)
+        res.data.user.should.have.deep.property('[0].id')
+        res.data.user.should.have.deep.property('[0].email')
+        res.data.user.should.have.deep.property('[0].first_name')
+        res.data.user.should.have.deep.property('[0].last_name')
         done()
       }).catch(err => console.log(err))
     })

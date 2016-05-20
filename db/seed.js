@@ -6,7 +6,7 @@ import sessions from './seeds/session.json'
 
 db.none('alter sequence users_id_seq restart with 1')
     .then(() => {
-      console.log('users_id_seq reset!')
+      console.log('User ID sequence got reset!')
     })
     .catch((error) => {
       console.log('Failed to reset users_id_seq!')
@@ -14,7 +14,7 @@ db.none('alter sequence users_id_seq restart with 1')
 
 db.none('alter sequence sessions_id_seq restart with 1')
     .then(() => {
-      console.log('sessions_id_seq reset!')
+      console.log('Session ID sequence got reset!')
     })
     .catch((error) => {
       console.log('Failed to reset sessions_id_seq!')
@@ -51,8 +51,8 @@ function createSessions() {
 }
 
 createUsers().then((res) => {
-  console.log('resolve users', res)
+  console.log('Resolved user promises')
   createSessions().then((result) => {
-    console.log('resolve sessions', result)
+    console.log('Resolved session promises')
   })
 })
