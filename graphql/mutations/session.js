@@ -51,17 +51,23 @@ var sessionMutation = {
       status: {
         type: GraphQLBoolean
       },
-      duration_success: {
+      user_id: {
+        type: GraphQLInt
+      },
+      date: {
         type: GraphQLString
+      },
+      duration_planned: {
+        type: GraphQLInt
+      },
+      duration_success: {
+        type: GraphQLInt
       },
       location: {
         type: GraphQLString
       },
       note: {
         type: GraphQLString
-      },
-      user_id: {
-        type: GraphQLInt
       }
     },
     resolve: (root, args) => sessionBase.update(args)

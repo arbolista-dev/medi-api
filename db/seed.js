@@ -1,14 +1,58 @@
+import db from './config'
 import User from '../model/user/user'
-import Session from '../model/session/session'
 import users from './seeds/user.json'
+import Session from '../model/session/session'
 import sessions from './seeds/session.json'
 
-users.forEach((user_args) => {
-  let user = new User(user_args)
-  user.create()
-})
+db.none('alter sequence users_id_seq restart with 1')
+    .then(() => {
+      console.log('users_id_seq reset!')
+    })
+    .catch((error) => {
+      console.log('Failed to reset users_id_seq!')
+    })
 
-sessions.forEach((session_args) => {
-  let session = new Session(session_args)
-  session.create()
+db.none('alter sequence sessions_id_seq restart with 1')
+    .then(() => {
+      console.log('sessions_id_seq reset!')
+    })
+    .catch((error) => {
+      console.log('Failed to reset sessions_id_seq!')
+    })
+
+function createUsers() {
+  var user_promises = []
+  users.forEach((user_args) => {
+    var deferred = new Promise((resolve) => {
+      let user = new User(user_args)
+      user.create().then((res) => {
+        resolve(res)
+      })
+    })
+    user_promises.push(deferred)
+  })
+
+  return Promise.all(user_promises)
+}
+
+function createSessions() {
+  var session_promises = []
+
+  sessions.forEach((session_args) => {
+    var deferred = new Promise((resolve) => {
+      let session = new Session(session_args)
+      session.create().then((res) => {
+        resolve(res)
+      })
+    })
+    session_promises.push(deferred)
+  })
+  return Promise.all(session_promises)
+}
+
+createUsers().then((res) => {
+  console.log('resolve users', res)
+  createSessions().then((result) => {
+    console.log('resolve sessions', result)
+  })
 })

@@ -27,6 +27,8 @@ class User {
             return new Error('User already exists.')
           case '23502':
             return new Error('Required field ' + error.column + ' not given')
+          default:
+            return new Error('User creation error: ', error)
           }
         })
     }).catch((error) => {

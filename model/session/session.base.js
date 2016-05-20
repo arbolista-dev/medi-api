@@ -1,5 +1,5 @@
 import db from '../../db/config'
-import { intToDateString, stringDatetoInt } from './session.helper'
+import { intToDateString, stringDateToInt } from './session.helper'
 
 class SessionBase {
 
@@ -31,8 +31,8 @@ class SessionBase {
 
   getByUser(user_id, start, end) {
     if (start && end) {
-      let _start = stringDatetoInt(start)
-      let _end = stringDatetoInt(end)
+      let _start = stringDateToInt(start)
+      let _end = stringDateToInt(end)
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1 AND date >= $2 AND date <= $3', [user_id, _start, _end])
         .then((data) => {
           console.log('Get sessions for user', data)
@@ -55,8 +55,8 @@ class SessionBase {
 
   getAll(start, end) {
     if (start && end) {
-      let _start = stringDatetoInt(start)
-      let _end = stringDatetoInt(end)
+      let _start = stringDateToInt(start)
+      let _end = stringDateToInt(end)
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE date >= $1 AND date <= $2', [_start, _end])
         .then((data) => {
           console.log('List session within date range', data)
@@ -83,13 +83,19 @@ class SessionBase {
   }
 
   update(data) {
-    console.log('data is:', data)
-    return db.result('UPDATE sessions SET status = COALESCE($2, status), user_id = COALESCE($3, user_id), date = COALESCE($4::integer, date), location = COALESCE($5, location), note = COALESCE($6, note), duration_success = COALESCE($7, duration_success) WHERE id = $1 RETURNING id, status, user_id, date, note, duration_success, status', [data.id, data.status, data.user_id, data.date, data.location, data.note, data.duration_success])
+    let _date
+    if (data.date) { _date = stringDateToInt(data.date) }
+    return db.result('UPDATE sessions SET status = COALESCE($2, status), user_id = COALESCE($3, user_id), date = COALESCE($4, date), duration_planned = COALESCE($5, duration_planned), duration_success = COALESCE($6, duration_success), location = COALESCE($7, location), note = COALESCE($8, note) WHERE id = $1 RETURNING id, status, user_id, date, duration_planned, duration_success, location, note', [data.id, data.status, data.user_id, _date, data.duration_planned, data.duration_success, data.location, data.note])
       .then((result) => {
-        console.log('Updated session with ID:', result.rows)
-        return result.rows[0]
+        if(result.rowCount === 0) {
+          return new Error('Session does not exist')
+        } else {
+          console.log('Updated session with ID:', result.rows)
+          return result.rows[0]
+        }
       })
       .catch((error) => {
+        console.log(error)
         return new Error('Session update error: ', error)
       })
   }
@@ -97,8 +103,12 @@ class SessionBase {
   delete(id) {
     return db.result('DELETE FROM sessions WHERE id = $1', id)
       .then((result) => {
-        console.log('Deleted session with ID:', id)
-        return result
+        if(result.rowCount === 0) {
+          return new Error('Session does not exist')
+        } else {
+          console.log('Deleted session with ID:', id)
+          return result
+        }
       })
       .catch((error) => {
         console.log(error)

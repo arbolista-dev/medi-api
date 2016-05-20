@@ -1,4 +1,4 @@
-export function stringDatetoInt(date) {
+export function stringDateToInt(date) {
   return Math.floor(new Date(date) / 1000)
 }
 

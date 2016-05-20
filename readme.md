@@ -14,6 +14,15 @@ Build server
 gulp build
 ```
 
+## DB: Development / test environment
+```
+// Test
+source .env.test
+
+// Development
+source .env
+```
+
 ## API Documentation
 
 ### Add user

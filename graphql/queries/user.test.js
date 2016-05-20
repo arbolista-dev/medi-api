@@ -16,13 +16,14 @@ function api(query) {
   return result
 }
 
+
 describe('User queries', () => {
 
   describe('get users', (done) => {
 
     var query = 'query { user(id:1) { id email first_name last_name } }'
     let result = api(query).then(result => {
-      console.log(result)
+      console.log('user query result', result)
       return result
       done()
     }).catch(err => console.log(err))
