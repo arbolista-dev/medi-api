@@ -24,14 +24,22 @@ class User {
           console.info('Created user: ', user)
           return user
         })
-        .catch((error) => {
-          switch (error.code) {
+        .catch((err) => {
+          switch (err.code) {
           case '23505':
-            return new Error('User already exists.')
+            return new Error(JSON.stringify({
+              key: 'email',
+              msg: 'non-unique'
+            }))
           case '23502':
-            return new Error('Required field ' + error.column + ' not given')
+            return new Error(JSON.stringify({
+              key: err.column,
+              msg: 'unspecified'
+            }))
           default:
-            return new Error('User creation error: ', error)
+            return new Error(JSON.stringify({
+              msg: 'creation-error'
+            }))
           }
         })
     }).catch((error) => {

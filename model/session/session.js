@@ -21,9 +21,14 @@ class Session {
       }).catch((error) => {
         switch (error.code) {
         case '23503':
-          return new Error('Session cannot be created. Specified user does not exist.')
+          return new Error(JSON.stringify({
+            key: 'user_id',
+            msg: 'non-existent'
+          }))
         default:
-          return new Error('Session creation error: ', error)
+          return new Error(JSON.stringify({
+            msg: 'creation-error'
+          }))
         }
       })
   }

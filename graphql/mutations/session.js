@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLBoolean, GraphQLInt} from 'graphql'
+import { GraphQLString, GraphQLBoolean, GraphQLInt, GraphQLNonNull} from 'graphql'
 
 import sessionType from '../types/session'
 import SessionBase from '../../model/session/session.base'
@@ -11,16 +11,16 @@ var sessionMutation = {
     type: sessionType,
     args: {
       status: {
-        type: GraphQLBoolean
+        type: new GraphQLNonNull(GraphQLBoolean)
       },
       user_id: {
         type: GraphQLInt
       },
       date: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       },
       duration_planned: {
-        type: GraphQLInt
+        type: new GraphQLNonNull(GraphQLInt)
       },
       duration_success: {
         type: GraphQLInt
@@ -41,7 +41,7 @@ var sessionMutation = {
     type: sessionType,
     args: {
       id: {
-        type: GraphQLInt
+        type: new GraphQLNonNull(GraphQLInt)
       },
       status: {
         type: GraphQLBoolean
@@ -71,7 +71,7 @@ var sessionMutation = {
     type: sessionType,
     args: {
       id: {
-        type: GraphQLInt
+        type: new GraphQLNonNull(GraphQLInt)
       }
     },
     resolve: (root, args) => sessionBase.delete(args.id)

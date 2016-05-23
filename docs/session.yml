@@ -8,32 +8,32 @@ Add:
       type: Boolean
       errors:
         - non-unique
-        - missing
+        - unspecified
     user_id:
       type: Integer
       errors:
         - non-existing
-        - missing
+        - unspecified
     date:
       type: String
       errors:
-        - missing
+        - unspecified
     duration_planned:
       type: Integer
       errors:
-        - missing
+        - unspecified
     duration_success:
       type: Integer
       errors:
-        - missing
+        - unspecified
     location:
       type: String
       errors:
-        - missing
+        - unspecified
     note:
       type: String
       errors:
-        - missing
+        - unspecified
   examples:
     "Session is successfully created":
       request:
@@ -136,37 +136,37 @@ Update:
       type: String
       errors:
         - non-existing
-        - missing
+        - unspecified
     status:
       type: Boolean
       errors:
         - non-unique
-        - missing
+        - unspecified
     user_id:
       type: Integer
       errors:
         - non-existing
-        - missing
+        - unspecified
     date:
       type: String
       errors:
-        - missing
+        - unspecified
     duration_planned:
       type: Integer
       errors:
-        - missing
+        - unspecified
     duration_success:
       type: Integer
       errors:
-        - missing
+        - unspecified
     location:
       type: String
       errors:
-        - missing
+        - unspecified
     note:
       type: String
       errors:
-        - missing
+        - unspecified
   examples:
     "Session is successfully updated":
       request:
@@ -205,7 +205,7 @@ Delete:
     id:
       type: String
       errors:
-        - missing
+        - unspecified
         - non-existing
   examples:
     "Session is successfully deleted":
@@ -225,4 +225,4 @@ Delete:
           deleteSession: null
         errors:
           message:
-            - missing
+            - unspecified

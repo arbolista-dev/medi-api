@@ -1,4 +1,4 @@
-import { GraphQLString, GraphQLInt } from 'graphql'
+import { GraphQLString, GraphQLInt, GraphQLNonNull } from 'graphql'
 
 import userType from '../types/user'
 
@@ -12,16 +12,16 @@ var userMutation = {
     type: userType,
     args: {
       email: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       },
       first_name: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       },
       last_name: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       },
       password: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       }
     },
     resolve(root, args) {
@@ -33,7 +33,7 @@ var userMutation = {
     type: userType,
     args: {
       id: {
-        type: GraphQLInt
+        type: new GraphQLNonNull(GraphQLInt)
       },
       email: {
         type: GraphQLString
@@ -54,7 +54,7 @@ var userMutation = {
     type: userType,
     args: {
       id: {
-        type: GraphQLInt
+        type: new GraphQLNonNull(GraphQLInt)
       }
     },
     resolve: (root, args) => userBase.delete(args.id)
@@ -63,10 +63,10 @@ var userMutation = {
     type: userType,
     args: {
       email: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       },
       password: {
-        type: GraphQLString
+        type: new GraphQLNonNull(GraphQLString)
       }
     },
     resolve(root, args) {

@@ -17,14 +17,19 @@ class SessionBase {
     return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE id= $1', id)
       .then((data) => {
         if (data[0] == null) {
-          return new Error('Specified session not found')
+          return new Error(JSON.stringify({
+            key: 'id',
+            code: 'non-existent'
+          }))
         } else {
           console.info('Get session', data)
           return data
         }
       })
-      .catch((error) => {
-        return new Error('Session retrieval error: ', error)
+      .catch(() => {
+        return new Error(JSON.stringify({
+          code: 'retrieval-error'
+        }))
       })
   }
 
@@ -35,14 +40,19 @@ class SessionBase {
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1 AND date >= $2 AND date <= $3', [user_id, _start, _end])
         .then((data) => {
           if (data[0] == null) {
-            return new Error('No sessions found')
+            return new Error(JSON.stringify({
+              key: 'user_id',
+              code: 'non-existent'
+            }))
           } else {
             console.info('Get sessions for user', data)
             return data
           }
         })
-        .catch((error) => {
-          return new Error('Error getting sessions by user: ', error)
+        .catch(() => {
+          return new Error(JSON.stringify({
+            code: 'retrieval-error'
+          }))
         })
     } else {
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE user_id= $1', user_id)
@@ -50,8 +60,11 @@ class SessionBase {
           console.info('Get sessions for user', data)
           return data
         })
-        .catch((error) => {
-          return new Error('Error getting sessions by user: ', error)
+        .catch(() => {
+          return new Error(JSON.stringify({
+            key: 'user_id',
+            code: 'non-existent'
+          }))
         })
     }
   }
@@ -64,13 +77,18 @@ class SessionBase {
         .then((data) => {
           console.info('List session within date range', data)
           if (data[0] == null) {
-            return new Error('Specified session not found')
+            return new Error(JSON.stringify({
+              key: 'date',
+              code: 'non-existent'
+            }))
           } else {
             return data
           }
         })
-        .catch((error) => {
-          return new Error('Session retrieval error: ', error)
+        .catch(() => {
+          return new Error(JSON.stringify({
+            code: 'retrieval-error'
+          }))
         })
     } else {
       return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions')
@@ -78,8 +96,10 @@ class SessionBase {
           console.info('List sessions', data)
           return data
         })
-        .catch((error) => {
-          return new Error('Session listing error: ', error)
+        .catch(() => {
+          return new Error(JSON.stringify({
+            code: 'retrieval-error'
+          }))
         })
     }
   }
@@ -92,14 +112,19 @@ class SessionBase {
     return db.result('UPDATE sessions SET status = COALESCE($2, status), user_id = COALESCE($3, user_id), date = COALESCE($4, date), duration_planned = COALESCE($5, duration_planned), duration_success = COALESCE($6, duration_success), location = COALESCE($7, location), note = COALESCE($8, note) WHERE id = $1 RETURNING id, status, user_id, date, duration_planned, duration_success, location, note', [data.id, data.status, data.user_id, _date, data.duration_planned, data.duration_success, data.location, data.note])
       .then((result) => {
         if (result.rowCount === 0) {
-          return new Error('Session does not exist')
+          return new Error(JSON.stringify({
+            key: 'id',
+            code: 'non-existent'
+          }))
         } else {
           console.info('Updated session with ID:', result.rows)
           return result.rows[0]
         }
       })
-      .catch((error) => {
-        return new Error('Session update error: ', error)
+      .catch(() => {
+        return new Error(JSON.stringify({
+          code: 'update-error'
+        }))
       })
   }
 
@@ -107,14 +132,19 @@ class SessionBase {
     return db.result('DELETE FROM sessions WHERE id = $1', id)
       .then((result) => {
         if (result.rowCount === 0) {
-          return new Error('Session does not exist')
+          return new Error(JSON.stringify({
+            key: 'id',
+            code: 'non-existent'
+          }))
         } else {
           console.info('Deleted session with ID:', id)
           return result
         }
       })
-      .catch((error) => {
-        return new Error('Session deletion error: ', error)
+      .catch(() => {
+        return new Error(JSON.stringify({
+          code: 'deletion-error'
+        }))
       })
   }
 }

@@ -8,19 +8,19 @@ Add:
       type: String
       errors:
         - non-unique
-        - missing
+        - unspecified
     first_name:
       type: String
       errors:
-        - missing
+        - unspecified
     last_name:
       type: String
       errors:
-        - missing
+        - unspecified
     password:
       type: String
       errors:
-        - missing
+        - unspecified
         - mismatch
   examples:
     "User is successfully created":
@@ -62,7 +62,7 @@ Add:
           addUser: null
         errors:
           message:
-            - missing
+            - unspecified
     "First name is not given":
       request:
         query_variables:
@@ -74,7 +74,7 @@ Add:
           addUser: null
         errors:
           message:
-            - missing
+            - unspecified
     "Last name is not given":
       request:
         query_variables:
@@ -86,7 +86,7 @@ Add:
           addUser: null
         errors:
           message:
-            - missing
+            - unspecified
     "Password is not given":
       request:
         query_variables:
@@ -98,7 +98,7 @@ Add:
           addUser: null
         errors:
           message:
-            - missing
+            - unspecified
 
 Update:
   root_type: 'mutation'
@@ -111,12 +111,12 @@ Update:
       type: String
       errors:
         - non-existing
-        - missing
+        - unspecified
     email:
       type: String
       errors:
         - non-unique
-        - missing
+        - unspecified
     first_name:
       type: String
     last_name:
@@ -168,7 +168,7 @@ Update:
           updateUser: null
         errors:
           message:
-            - missing
+            - unspecified
 
 Delete:
   root_type: 'mutation'
@@ -180,7 +180,7 @@ Delete:
     id:
       type: String
       errors:
-        - missing
+        - unspecified
   examples:
     "User is successfully deleted":
       request:
@@ -199,7 +199,7 @@ Delete:
           deleteUser: null
         errors:
           message:
-            - missing
+            - unspecified
 
 Authenticate:
   root_type: 'mutation'
@@ -211,11 +211,11 @@ Authenticate:
       type: String
       errors:
         - non-existing
-        - missing
+        - unspecified
     password:
       type: String
       errors:
-        - missing
+        - unspecified
         - mismatch
   examples:
     "User is successfully authenticated":
@@ -237,7 +237,7 @@ Authenticate:
           authenticateUser: null
         errors:
           message:
-            - missing
+            - unspecified
     "Email is not given":
       request:
         query_variables:
@@ -247,7 +247,7 @@ Authenticate:
           authenticateUser: null
         errors:
           message:
-            - missing
+            - unspecified
     "Password is not given":
       request:
         query_variables:
@@ -257,4 +257,4 @@ Authenticate:
           authenticateUser: null
         errors:
           message:
-            - missing
+            - unspecified

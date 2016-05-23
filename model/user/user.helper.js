@@ -23,7 +23,10 @@ export function getHashByUserId(user_id) {
       return hash[0].hash
     })
     .catch(() => {
-      return new Error('User or corresponding password not found.')
+      return new Error(JSON.stringify({
+        key: 'id',
+        msg: 'non-existent'
+      }))
     })
 }
 
