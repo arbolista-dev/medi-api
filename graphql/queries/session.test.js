@@ -1,15 +1,19 @@
+/* eslint-disable */
 const chai = require('chai'),
-      chaiAsPromised = require('chai-as-promised'),
-      should = chai.should(),
-      expect = chai.expect()
+  chaiAsPromised = require('chai-as-promised'),
+  should = chai.should(),
+  expect = chai.expect()
 
 chai.use(chaiAsPromised)
+/* eslint-enable */
 
 import schema from '../schema'
 import { graphql } from 'graphql'
 
 function api(query) {
-  var result = graphql(schema, query).then(res => { return res }).catch(err => console.log(err))
+  var result = graphql(schema, query).then(res => {
+    return res
+  }).catch(err => console.error(err))
   if (result.errors !== undefined) {
     throw new Error(JSON.stringify(result.errors, null, 2));
   }
@@ -18,16 +22,13 @@ function api(query) {
 
 
 describe('Session queries', () => {
-
-  describe('#get one session by id', (done) => {
-
+  describe('#get one session by id', () => {
     it('successfully returns valid data', (done) => {
-
       var query = 'query { session(id:2) { id user_id status date duration_planned duration_success  location note } }'
+
       let result = api(query).then(result => {
         return result
-        done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
 
       result.then((res) => {
         res.should.have.property('data')
@@ -41,33 +42,32 @@ describe('Session queries', () => {
         res.data.session.should.have.deep.property('[0].location')
         res.data.session.should.have.deep.property('[0].note')
         done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
     })
 
     it('returns error if session does not exist', (done) => {
-
       var query = 'query { session(id:9999) { id user_id status date duration_planned duration_success  location note } }'
+
       let result = api(query).then(result => {
         return result
-        done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
 
       result.then(res => {
         res.should.have.property('data')
         res.should.have.property('errors')
         // res.errors[0].should.have.property('message')
         done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
     })
   })
 
-  describe('#get sessions by user and date range', (done) => {
+  describe('#get sessions by user and date range', () => {
     it('successfully returns valid data', (done) => {
       var query = 'query { session(user_id: 2, start_date: "2016-04-22", end_date: "2016-05-25") { id user_id status date duration_planned duration_success  location note } }'
+
       let result = api(query).then(result => {
         return result
-        done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
 
       result.then((res) => {
         res.should.have.property('data')
@@ -81,33 +81,32 @@ describe('Session queries', () => {
         res.data.session.should.have.deep.property('[0].location')
         res.data.session.should.have.deep.property('[0].note')
         done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
     })
 
     it('returns error if no sessions exist for user within date range', (done) => {
       var query = 'query { session(user_id: 999, start_date: "2016-04-22", end_date: "2016-05-25") { id user_id status date duration_planned duration_success  location note } }'
+
       let result = api(query).then(result => {
         return result
-        done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
 
       result.then(res => {
         res.should.have.property('data')
         res.should.have.property('errors')
         // res.errors[0].should.have.property('message')
         done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
     })
   })
 
-  describe('#get all sessions', (done) => {
+  describe('#get all sessions', () => {
     it('successfully returns valid data', (done) => {
-
       var query = 'query { session { id user_id status date duration_planned duration_success  location note } }'
+
       let result = api(query).then(result => {
         return result
-        done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
 
       result.then(res => {
         res.should.have.property('data')
@@ -122,7 +121,7 @@ describe('Session queries', () => {
         res.data.session.should.have.deep.property('[0].location')
         res.data.session.should.have.deep.property('[0].note')
         done()
-      }).catch(err => console.log(err))
+      }).catch(err => console.error(err))
     })
   })
 })

@@ -1,8 +1,9 @@
-import { GraphQLSchema, GraphQLObjectType } from 'graphql'
+import { GraphQLSchema } from 'graphql'
 import schema from './schema'
 
 import chai from 'chai'
 chai.should()
+
 
 describe('GraphQL schema', () => {
   it('creates a valid schema', () => {

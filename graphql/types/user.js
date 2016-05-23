@@ -1,9 +1,4 @@
-import {
-  GraphQLObjectType,
-  GraphQLList,
-  GraphQLString,
-  GraphQLInt
-} from 'graphql'
+import { GraphQLObjectType, GraphQLList, GraphQLString, GraphQLInt } from 'graphql'
 
 import sessionType from '../types/session'
 import SessionBase from '../../model/session/session.base'
@@ -27,7 +22,7 @@ const UserType = new GraphQLObjectType({
     },
     sessions: {
       type: new GraphQLList(sessionType),
-      resolve(root, args) {
+      resolve(root) {
         return sessionBase.getByUser(root.id)
       }
     },

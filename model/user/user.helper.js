@@ -10,7 +10,7 @@ export function hashPassword(password) {
       if (err) return reject(err)
       bcrypt.hash(password, salt, (err, hash) => {
         if (err) return reject(err)
-        console.log("Hashed password: ", hash)
+        console.info('Hashed password: ', hash)
         return resolve(hash)
       })
     })
@@ -22,7 +22,7 @@ export function getHashByUserId(user_id) {
     .then((hash) => {
       return hash[0].hash
     })
-    .catch((error) => {
+    .catch(() => {
       return new Error('User or corresponding password not found.')
     })
 }

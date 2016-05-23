@@ -1,7 +1,4 @@
-import {
-  GraphQLString,
-  GraphQLInt
-} from 'graphql'
+import { GraphQLString, GraphQLInt } from 'graphql'
 
 import userType from '../types/user'
 
@@ -28,7 +25,6 @@ var userMutation = {
       }
     },
     resolve(root, args) {
-      console.log(args)
       let user = new User(args)
       return user.create()
     }

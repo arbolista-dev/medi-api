@@ -1,8 +1,4 @@
-import {
-  GraphQLInt,
-  GraphQLString,
-  GraphQLList
-} from 'graphql'
+import { GraphQLInt, GraphQLString, GraphQLList } from 'graphql'
 
 import sessionType from '../types/session'
 import SessionBase from '../../model/session/session.base'

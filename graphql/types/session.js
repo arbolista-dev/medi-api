@@ -1,9 +1,4 @@
-import {
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLInt
-} from 'graphql'
+import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt } from 'graphql'
 
 const SessionType = new GraphQLObjectType({
   name: 'Session',

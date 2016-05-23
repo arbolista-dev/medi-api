@@ -1,7 +1,4 @@
-import {
-  GraphQLInt,
-  GraphQLList
-} from 'graphql'
+import { GraphQLInt, GraphQLList } from 'graphql'
 
 import userType from '../types/user'
 import UserBase from '../../model/user/user.base'

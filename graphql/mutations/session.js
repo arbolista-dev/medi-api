@@ -1,11 +1,6 @@
-import {
-  GraphQLString,
-  GraphQLBoolean,
-  GraphQLInt
-} from 'graphql'
+import { GraphQLString, GraphQLBoolean, GraphQLInt} from 'graphql'
 
 import sessionType from '../types/session'
-
 import SessionBase from '../../model/session/session.base'
 import Session from '../../model/session/session'
 
@@ -81,7 +76,6 @@ var sessionMutation = {
     },
     resolve: (root, args) => sessionBase.delete(args.id)
   }
-
 }
 
 export default sessionMutation

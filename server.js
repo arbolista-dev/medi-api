@@ -1,10 +1,10 @@
 import express from 'express'
 import expressGraphQL from 'express-graphql'
-import jwt from 'jsonwebtoken'
-import ExpressJwt from 'express-jwt'
+// import jwt from 'jsonwebtoken'
+// import ExpressJwt from 'express-jwt'
+// import authConfig from './lib/auth'
 import passport from 'passport'
 import schema from './graphql/schema'
-import authConfig from './lib/auth'
 import yaml from 'js-yaml'
 import fs from 'fs'
 
@@ -24,7 +24,7 @@ server.get('/docs/:model', (req, res) => {
   try {
     data = yaml.safeLoad(fs.readFileSync('docs/' + model + '.yml', 'utf8'));
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 
   res.render('partials/detail', {
@@ -36,10 +36,10 @@ server.get('/docs/:model', (req, res) => {
 server.use(passport.initialize())
 
 server.use('/graphql', expressGraphQL({
-    schema,
-    graphiql: true
+  schema,
+  graphiql: true
 }))
 
 server.listen(3003, () => {
-    console.log('The server is running at http://localhost:3003/')
+  console.info('The server is running at http://localhost:3003/')
 })

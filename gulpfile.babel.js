@@ -5,7 +5,7 @@ var nodeExternals = require('webpack-node-externals')
 
 gulp.task('build', function (done) {
 
-  var config = require(`./webpack.js`)
+  var config = require('./webpack.js')
   webpack(config, function (err, stats) {
     if (err) {
       throw new gutil.PluginError('webpack', err)

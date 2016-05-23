@@ -1,4 +1,5 @@
-import { GraphQLSchema, GraphQLObjectType, GraphQLList } from 'graphql'
+import { GraphQLObjectType, GraphQLList } from 'graphql'
+
 import sessionType from './session'
 
 import chai from 'chai'

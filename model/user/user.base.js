@@ -7,7 +7,7 @@ class UserBase {
     if (id) {
       return db.any('SELECT * FROM users WHERE id= $1', id)
         .then((data) => {
-          console.log('Get user', data)
+          console.info('Get user', data)
           if (data[0] == null) {
             return new Error('Specified user not found')
           } else {
@@ -20,7 +20,7 @@ class UserBase {
     } else {
       return db.any('SELECT * FROM users')
         .then((data) => {
-          console.log('List users', data)
+          console.info('List users', data)
           return data
         })
         .catch((error) => {
@@ -33,14 +33,14 @@ class UserBase {
     if (email) {
       return db.any('SELECT * FROM users WHERE email= $1', email)
         .then((data) => {
-          console.log('Get user by email', data)
+          console.info('Get user by email', data)
           if (data[0] == null) {
             return new Error('Specified user not found')
           } else {
             return data
           }
         })
-        .catch((error) => {
+        .catch(() => {
           return new Error('Error getting user by email.')
         })
     } else {
@@ -63,15 +63,18 @@ class UserBase {
     this.beforeUpdate(data)
     return db.result('UPDATE users SET email = COALESCE($2, email), first_name = COALESCE($3, first_name), last_name = COALESCE($4, last_name), hash = COALESCE($5, hash) WHERE id = $1 RETURNING email, id, first_name, last_name', [data.id, data.email, data.first_name, data.last_name, data.hash])
       .then((result) => {
-        if(result.rowCount === 0) {
+        if (result.rowCount === 0) {
           return new Error('User does not exist.')
         } else {
           let user = {}
-          console.log(result.rows[0])
+          console.info(result.rows[0])
           user = result.rows[0]
-          let payload = { first_name: result.first_name, last_name: result.last_name }
+          let payload = {
+            first_name: result.first_name,
+            last_name: result.last_name
+          }
           user.token = generateJwt(result.id, payload)
-          console.log('Updated user:', user)
+          console.info('Updated user:', user)
           return user
         }
       })
@@ -83,21 +86,20 @@ class UserBase {
   delete(id) {
     return db.result('DELETE FROM users WHERE id = $1', id)
       .then((result) => {
-        if(result.rowCount === 0) {
+        if (result.rowCount === 0) {
           return new Error('User does not exist.')
         } else {
-          console.log('Deleted user with ID:', id)
+          console.info('Deleted user with ID:', id)
           return result
         }
       })
       .catch((error) => {
-        console.log(error)
         return new Error('User deletion error: ', error)
       })
   }
 
   authenticate(req) {
-    console.log('model auth user: ', req)
+    console.info('model auth user: ', req)
     if (!req.email || !req.password) {
       return new Error('All fields required.')
     } else {
@@ -111,11 +113,11 @@ class UserBase {
               .then((hash) => {
                 return checkPassword(hash, req.password)
                   .then((status) => {
-                    console.log('Password is correct? ', status)
+                    console.info('Password is correct? ', status)
                     if (status) {
                       let result = {}
                       result.token = generateJwt(user.id, user)
-                      console.log('User authenticated using JWT: ', result)
+                      console.info('User authenticated using JWT: ', result)
                       return result
                     } else {
                       return new Error('Incorrect password.')

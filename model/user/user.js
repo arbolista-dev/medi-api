@@ -16,9 +16,12 @@ class User {
         .then((result) => {
           let user = {}
           user = result
-          let payload = { first_name: this.first_name, last_name: this.last_name }
+          let payload = {
+            first_name: this.first_name,
+            last_name: this.last_name
+          }
           user.token = generateJwt(result.id, payload)
-          console.log('Created user: ', user)
+          console.info('Created user: ', user)
           return user
         })
         .catch((error) => {

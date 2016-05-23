@@ -1,4 +1,6 @@
+/* eslint-disable */
 const should = require('chai').should()
+/* eslint-enable */
 
 import schema from './graphql/schema'
 import { graphql } from 'graphql'

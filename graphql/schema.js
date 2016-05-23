@@ -1,7 +1,4 @@
-import {
-  GraphQLSchema,
-  GraphQLObjectType
-} from 'graphql'
+import { GraphQLSchema, GraphQLObjectType } from 'graphql'
 
 import userQueries from './queries/user'
 import userMutations from './mutations/user'
