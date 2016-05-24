@@ -1,6 +1,7 @@
 import db from '../../db/config'
 import { stringDateToInt } from './session.helper'
 
+
 class Session {
 
   constructor(props) {

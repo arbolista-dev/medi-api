@@ -1,15 +1,9 @@
-/* eslint-disable */
-const chai = require('chai'),
-    chaiAsPromised = require('chai-as-promised'),
-    should = chai.should(),
-    expect = chai.expect()
-
-chai.use(chaiAsPromised)
-/* eslint-enable */
-
+import chai from 'chai'
+chai.should()
 
 import schema from '../schema'
 import { graphql } from 'graphql'
+
 
 function api(query) {
   var result = graphql(schema, query).then(res => {
@@ -20,7 +14,6 @@ function api(query) {
   }
   return result
 }
-
 
 describe('User queries', () => {
   describe('#get one user by id', () => {
@@ -70,8 +63,8 @@ describe('User queries', () => {
 
       result.then(res => {
         res.should.have.property('data')
-        res.should.have.property('errors')
-        // res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('id')
+        res.errors[0].should.have.property('message').and.include('non-existent')
         done()
       }).catch(err => console.error(err))
     })

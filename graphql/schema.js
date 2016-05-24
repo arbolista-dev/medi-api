@@ -1,9 +1,8 @@
 import { GraphQLSchema, GraphQLObjectType } from 'graphql'
 
 import userQueries from './queries/user'
-import userMutations from './mutations/user'
-
 import sessionQueries from './queries/session'
+import userMutations from './mutations/user'
 import sessionMutations from './mutations/session'
 
 

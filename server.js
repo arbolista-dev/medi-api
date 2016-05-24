@@ -1,12 +1,13 @@
 import express from 'express'
 import expressGraphQL from 'express-graphql'
-// import jwt from 'jsonwebtoken'
-// import ExpressJwt from 'express-jwt'
-// import authConfig from './lib/auth'
 import passport from 'passport'
 import schema from './graphql/schema'
 import yaml from 'js-yaml'
 import fs from 'fs'
+// import jwt from 'jsonwebtoken'
+// import ExpressJwt from 'express-jwt'
+// import authConfig from './lib/auth'
+
 
 const server = global.server = express()
 

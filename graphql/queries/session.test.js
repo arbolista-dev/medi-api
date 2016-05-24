@@ -1,14 +1,9 @@
-/* eslint-disable */
-const chai = require('chai'),
-  chaiAsPromised = require('chai-as-promised'),
-  should = chai.should(),
-  expect = chai.expect()
-
-chai.use(chaiAsPromised)
-/* eslint-enable */
+import chai from 'chai'
+chai.should()
 
 import schema from '../schema'
 import { graphql } from 'graphql'
+
 
 function api(query) {
   var result = graphql(schema, query).then(res => {
@@ -19,7 +14,6 @@ function api(query) {
   }
   return result
 }
-
 
 describe('Session queries', () => {
   describe('#get one session by id', () => {
@@ -54,8 +48,8 @@ describe('Session queries', () => {
 
       result.then(res => {
         res.should.have.property('data')
-        res.should.have.property('errors')
-        // res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('id')
+        res.errors[0].should.have.property('message').and.include('non-existent')
         done()
       }).catch(err => console.error(err))
     })
@@ -63,7 +57,7 @@ describe('Session queries', () => {
 
   describe('#get sessions by user and date range', () => {
     it('successfully returns valid data', (done) => {
-      var query = 'query { session(user_id: 2, start_date: "2016-04-22", end_date: "2016-05-25") { id user_id status date duration_planned duration_success  location note } }'
+      var query = 'query { session(user_id: 2, start_date: "2016-05-01", end_date: "2016-05-31") { id user_id status date duration_planned duration_success  location note } }'
 
       let result = api(query).then(result => {
         return result
@@ -72,7 +66,7 @@ describe('Session queries', () => {
       result.then((res) => {
         res.should.have.property('data')
         res.should.not.have.property('errors')
-        res.data.session.should.have.deep.property('[0].id', 2)
+        res.data.session.should.have.deep.property('[0].id')
         res.data.session.should.have.deep.property('[0].user_id', 2)
         res.data.session.should.have.deep.property('[0].status')
         res.data.session.should.have.deep.property('[0].date')
@@ -93,8 +87,8 @@ describe('Session queries', () => {
 
       result.then(res => {
         res.should.have.property('data')
-        res.should.have.property('errors')
-        // res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('user_id')
+        res.errors[0].should.have.property('message').and.include('non-existent')
         done()
       }).catch(err => console.error(err))
     })

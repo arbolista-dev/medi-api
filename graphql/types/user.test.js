@@ -1,9 +1,9 @@
+import chai from 'chai'
+chai.should()
+
 import { GraphQLObjectType, GraphQLList } from 'graphql'
 
 import userType from './user'
-
-import chai from 'chai'
-chai.should()
 
 
 describe('User type', () => {

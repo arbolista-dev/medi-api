@@ -1,5 +1,6 @@
 import { GraphQLObjectType, GraphQLString, GraphQLBoolean, GraphQLInt } from 'graphql'
 
+
 const SessionType = new GraphQLObjectType({
   name: 'Session',
   fields: () => ({

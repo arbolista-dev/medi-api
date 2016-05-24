@@ -3,6 +3,7 @@ import { GraphQLObjectType, GraphQLList, GraphQLString, GraphQLInt } from 'graph
 import sessionType from '../types/session'
 import SessionBase from '../../model/session/session.base'
 
+
 let sessionBase = new SessionBase()
 
 const UserType = new GraphQLObjectType({

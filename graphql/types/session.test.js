@@ -1,9 +1,9 @@
+import chai from 'chai'
+chai.should()
+
 import { GraphQLObjectType, GraphQLList } from 'graphql'
 
 import sessionType from './session'
-
-import chai from 'chai'
-chai.should()
 
 
 describe('Session type', () => {

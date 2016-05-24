@@ -58,7 +58,7 @@ mutation {
 ### Authenticate user
 
 mutation {
-  authenticateUser(email: "abc@example.com", password: "test2016") {
+  authenticateUser(email: "jimmy@example.com", password: "jimmy1") {
     token
   }
 }

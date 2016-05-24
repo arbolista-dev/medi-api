@@ -6,6 +6,7 @@ import {
     generateJwt
 } from './user.helper'
 
+
 class UserBase {
 
   get(id) {
@@ -69,6 +70,12 @@ class UserBase {
   }
 
   beforeUpdate(data) {
+    if (data.id === undefined) {
+      return new Error(JSON.stringify({
+        key: 'id',
+        code: 'unspecified'
+      }))
+    }
     if (data.password) {
       return hashPassword(data.password).then(hash => {
         data.hash = hash
@@ -100,31 +107,52 @@ class UserBase {
                 return user
               }
             })
-            .catch(() => {
-              return new Error(JSON.stringify({
-                code: 'update-error'
-              }))
+            .catch((err) => {
+              switch (err.code) {
+              case '23505':
+                return new Error(JSON.stringify({
+                  arg: 'email',
+                  msg: 'non-unique'
+                }))
+              case '23502':
+                return new Error(JSON.stringify({
+                  arg: err.column,
+                  msg: 'unspecified'
+                }))
+              default:
+                return new Error(JSON.stringify({
+                  msg: 'update-error'
+                }))
+              }
             })
   }
 
   delete(id) {
-    return db.result('DELETE FROM users WHERE id = $1', id)
-            .then((result) => {
-              if (result.rowCount === 0) {
+    if (id) {
+      return db.result('DELETE FROM users WHERE id = $1', id)
+              .then((result) => {
+                if (result.rowCount === 0) {
+                  return new Error(JSON.stringify({
+                    key: 'id',
+                    code: 'non-existent'
+                  }))
+                } else {
+                  console.info('Deleted user with ID:', id)
+                  return result
+                }
+              })
+              .catch(() => {
                 return new Error(JSON.stringify({
-                  key: 'id',
-                  code: 'non-existent'
+                  code: 'deletion-error'
                 }))
-              } else {
-                console.info('Deleted user with ID:', id)
-                return result
-              }
-            })
-            .catch(() => {
-              return new Error(JSON.stringify({
-                code: 'deletion-error'
-              }))
-            })
+              })
+    } else {
+      return new Error(JSON.stringify({
+        arg: 'id',
+        code: 'unspecified'
+      }))
+    }
+
   }
 
   authenticate(req) {

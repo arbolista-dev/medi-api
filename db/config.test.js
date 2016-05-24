@@ -1,8 +1,8 @@
-require('dotenv').load()
-import db from './config'
-
 import chai from 'chai'
 chai.should()
+
+require('dotenv').load()
+import db from './config'
 
 
 describe('Database connection', () => {

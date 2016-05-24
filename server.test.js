@@ -1,9 +1,9 @@
-/* eslint-disable */
-const should = require('chai').should()
-/* eslint-enable */
+import chai from 'chai'
+chai.should()
 
 import schema from './graphql/schema'
 import { graphql } from 'graphql'
+
 
 function api(query) {
   var result = graphql(schema, query).then(res => { return res })

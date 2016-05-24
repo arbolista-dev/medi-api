@@ -1,13 +1,9 @@
-/* eslint-disable */
-const chai = require('chai'),
-    chaiAsPromised = require('chai-as-promised'),
-    should = chai.should(),
-    expect = chai.expect()
-chai.use(chaiAsPromised)
-/* eslint-enable */
+import chai from 'chai'
+chai.should()
 
 import schema from '../schema'
 import { graphql } from 'graphql'
+
 
 function api(query) {
   var result = graphql(schema, query).then(res => {
@@ -18,7 +14,6 @@ function api(query) {
   }
   return result
 }
-
 
 describe('User mutations', () => {
   describe('#add user', () => {
@@ -49,7 +44,8 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('addUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('email')
+        res.errors[0].should.have.property('message').and.include('non-unique')
         done()
       }).catch(err => console.error(err))
     })
@@ -63,13 +59,14 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('addUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('email')
+        res.errors[0].should.have.property('message').and.include('unspecified')
         done()
       }).catch(err => console.error(err))
     })
 
     it('is not created without a password given', (done) => {
-      var mutation = 'mutation { addUser ( email: "walter@example.com", first_name: "Walter", last_name: "White" ) { id email first_name last_name token } }'
+      var mutation = 'mutation { addUser ( email: "walter1@example.com", first_name: "Walter", last_name: "White" ) { id email first_name last_name token } }'
 
       let result = api(mutation).then(result => {
         return result
@@ -77,7 +74,9 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('addUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('password')
+        res.errors[0].should.have.property('message').and.include('unspecified')
+
         done()
       }).catch(err => console.error(err))
     })
@@ -111,7 +110,8 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('updateUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('email')
+        res.errors[0].should.have.property('message').and.include('non-unique')
         done()
       }).catch(err => console.error(err))
     })
@@ -125,7 +125,8 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('updateUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('id')
+        res.errors[0].should.have.property('message').and.include('non-existent')
         done()
       }).catch(err => console.error(err))
     })
@@ -155,7 +156,23 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('deleteUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('id')
+        res.errors[0].should.have.property('message').and.include('non-existent')
+        done()
+      }).catch(err => console.error(err))
+    })
+
+    it('is not deleted because ID is not specified', (done) => {
+      var mutation = 'mutation { deleteUser { id } }'
+
+      let result = api(mutation).then(result => {
+        return result
+      }).catch(err => console.error(err))
+
+      result.then(res => {
+        res.data.should.have.property('deleteUser').null
+        res.errors[0].should.have.property('message').and.include('id')
+        res.errors[0].should.have.property('message').and.include('unspecified')
         done()
       }).catch(err => console.error(err))
     })
@@ -177,7 +194,52 @@ describe('User mutations', () => {
       }).catch(err => console.error(err))
     })
 
-    it('is unsuccessful with wrong password', (done) => {
+    it('is unsuccessful because user does not exist', (done) => {
+      var mutation = 'mutation { authenticateUser (email: "testest@example.com", password: "password") { token } }'
+
+      let result = api(mutation).then(result => {
+        return result
+      }).catch(err => console.error(err))
+
+      result.then(res => {
+        res.data.should.have.property('authenticateUser').null
+        res.errors[0].should.have.property('message').and.include('email')
+        res.errors[0].should.have.property('message').and.include('non-existent')
+        done()
+      }).catch(err => console.error(err))
+    })
+
+    it('is unsuccessful because email address is not given', (done) => {
+      var mutation = 'mutation { authenticateUser (password: "password") { token } }'
+
+      let result = api(mutation).then(result => {
+        return result
+      }).catch(err => console.error(err))
+
+      result.then(res => {
+        res.data.should.have.property('authenticateUser').null
+        res.errors[0].should.have.property('message').and.include('email')
+        res.errors[0].should.have.property('message').and.include('unspecified')
+        done()
+      }).catch(err => console.error(err))
+    })
+
+    it('is unsuccessful because password is not given', (done) => {
+      var mutation = 'mutation { authenticateUser (email: "walter@example.com") { token } }'
+
+      let result = api(mutation).then(result => {
+        return result
+      }).catch(err => console.error(err))
+
+      result.then(res => {
+        res.data.should.have.property('authenticateUser').null
+        res.errors[0].should.have.property('message').and.include('password')
+        res.errors[0].should.have.property('message').and.include('unspecified')
+        done()
+      }).catch(err => console.error(err))
+    })
+
+    it('is unsuccessful with incorrect password', (done) => {
       var mutation = 'mutation { authenticateUser (email: "walter@example.com", password: "password") { token } }'
 
       let result = api(mutation).then(result => {
@@ -186,7 +248,8 @@ describe('User mutations', () => {
 
       result.then(res => {
         res.data.should.have.property('authenticateUser').null
-        res.errors[0].should.have.property('message')
+        res.errors[0].should.have.property('message').and.include('password')
+        res.errors[0].should.have.property('message').and.include('incorrect')
         done()
       }).catch(err => console.error(err))
     })

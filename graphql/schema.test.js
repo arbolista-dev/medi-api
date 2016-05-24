@@ -1,8 +1,8 @@
-import { GraphQLSchema } from 'graphql'
-import schema from './schema'
-
 import chai from 'chai'
 chai.should()
+
+import { GraphQLSchema } from 'graphql'
+import schema from './schema'
 
 
 describe('GraphQL schema', () => {

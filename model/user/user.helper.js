@@ -1,8 +1,8 @@
+require('dotenv').load()
 import db from '../../db/config'
 import jsonwebtoken from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 
-var bcrypt = require('bcrypt')
-require('dotenv').load()
 
 export function hashPassword(password) {
   return new Promise((resolve, reject) => {

@@ -6,57 +6,43 @@ Add:
   parameters:
     status:
       type: Boolean
-      errors:
-        - non-unique
-        - unspecified
     user_id:
       type: Integer
       errors:
-        - non-existing
-        - unspecified
+        - non-existent
     date:
       type: String
-      errors:
-        - unspecified
     duration_planned:
-      type: Integer
-      errors:
-        - unspecified
+      type: String
     duration_success:
-      type: Integer
-      errors:
-        - unspecified
+      type: String
     location:
       type: String
-      errors:
-        - unspecified
     note:
       type: String
-      errors:
-        - unspecified
   examples:
     "Session is successfully created":
       request:
         query_variables:
-          user_id: 1
+          user_id: 2
           status: true
-          location: In the forest
-          note: Feeling good
-          date: 2016-06-07 04:05:00
+          location: In bed
+          note: Rainy day
+          date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
           duration_planned: 600
           duration_success: 600
       response:
         data:
           addSession:
-            id: 1
-    "User does not exist":
+            id: 2
+    "Session is not created without having existing user specified":
       request:
         query_variables:
-          user_id: 10000
+          user_id: 9999
           status: true
           location: In the forest
           note: Feeling good
-          date: 2016-06-07 04:05:00
+          date: Mon Jun 06 2016 23:05:00 GMT-0500 (CDT)
           duration_planned: 600
           duration_success: 600
       response:
@@ -64,7 +50,8 @@ Add:
           addSession: null
         errors:
           message:
-            - non-existing
+            arg: user_id
+            code: non-existent
 
 Get:
   root_type: 'query'
@@ -74,56 +61,102 @@ Get:
   - This will retrieve one or all sessions.
   parameters:
     id:
-      type: String
+      type: Integer
       errors:
-        - non-existing
+        - non-existent
   examples:
-    "Session exists and retrieved":
+    "Get one session by id successfully returns valid data":
       request:
         query_variables:
-          id: 1
+          id: 2
       response:
         data:
-          user:
-            id: 1
-            email: jimmy@example.com
-            first_name: Jimmy
-            last_name: Hendrix
-            sessions:
-              id: 1
-              user_id: 1
-              status: false
-              note: 'Hello'
-              location: 'At home'
-              date: Wed Apr 27 2016 04:05:06 GMT-0500 (CDT)
-    "Session list retrieved":
+          session:
+            id: 2
+            user_id: 2
+            status: true
+            location: In bed
+            note: Rainy day
+            date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
+            duration_planned: 600
+            duration_success: 600
+    "Get one session by id returns error if session does not exist":
+      request:
+        query_variables:
+          id: 9999
+      response:
+        data:
+          session: null
+        errors:
+          message:
+            arg: id
+            code: non-existent
+
+    "Get sessions by user and date range successfully returns valid data":
+      request:
+        query_variables:
+          user_id: 2
+          start_date: 2016-05-01
+          end_date: 2016-05-31
+      response:
+        data:
+          session:
+            id: 2
+            user_id: 2
+            status: true
+            location: In bed
+            note: Rainy day
+            date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
+            duration_planned: 600
+            duration_success: 600
+
+    "Get sessions by user and date range returns error if no sessions exist for user within date range":
+      request:
+        query_variables:
+          id: 999
+          start_date: 2016-04-22
+          end_date: 2016-05-25
+      response:
+        data:
+          session: null
+        errors:
+          message:
+            arg: user_id
+            code: non-existent
+
+    "Get all sessions successfully returns valid data":
       request:
         query_variables:
       response:
         data:
           session:
+          -
             id: 1
-            email: jimmy@example.com
-            first_name: Jimmy
-            last_name: Hendrix
-            sessions:
-              id: 1
-              user_id: 1
-              status: false
-              note: 'Hello'
-              location: 'At home'
-              date: Wed Apr 27 2016 04:05:06 GMT-0500 (CDT)
-
-    "Session does not exist":
-      request:
-        query_variables:
-          id: 10000
-      response:
-        data:
-          user: null
-        errors:
-          message:
-            - non-existing
+            user_id: 1
+            status: false
+            location: "In the park"
+            note: "Bad day"
+            date: "Wed May 18 2016 17:06:44 GMT-0500 (CDT)"
+            duration_planned: 1200
+            duration_success: 900
+          -
+            id: 2
+            user_id: 2
+            status: true
+            date: "Wed May 11 2016 13:06:44 GMT-0500 (CDT)"
+            duration_planned: 600
+            duration_success: 600
+            location: "In bed"
+            note: "Rainy day"
+          -
+            id: 3
+            user_id: 3
+            status: true
+            date: "Mon Jun 06 2016 23:05:00 GMT-0500 (CDT)"
+            duration_planned: 600
+            duration_success: 600
+            location: "In the forest"
+            note: "Feeling good"
 
 Update:
   root_type: 'mutation'
@@ -133,67 +166,52 @@ Update:
   - This will update an existing session.
   parameters:
     id:
-      type: String
+      type: Integer
       errors:
-        - non-existing
+        - non-existent
         - unspecified
     status:
       type: Boolean
-      errors:
-        - non-unique
-        - unspecified
     user_id:
       type: Integer
-      errors:
-        - non-existing
-        - unspecified
     date:
       type: String
-      errors:
-        - unspecified
     duration_planned:
-      type: Integer
-      errors:
-        - unspecified
+      type: String
     duration_success:
-      type: Integer
-      errors:
-        - unspecified
+      type: String
     location:
       type: String
-      errors:
-        - unspecified
     note:
       type: String
-      errors:
-        - unspecified
   examples:
-    "Session is successfully updated":
+    "Update session is successful and returns valid data":
       request:
         query_variables:
-          id: 1
-          user_id: 2
+          id: 3
+          user_id: 3
           status: true
-          location: At home
-          note: Feeling
-          date: 2016-02-07 04:05:00
+          location: "At home updated by test"
+          note: "Feeling"
+          date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)"
           duration_planned: 600
           duration_success: 600
       response:
         data:
           addSession:
             id: 1
-    "Session does not exist":
+    "Session is not updated because it does not exist":
       request:
         query_variables:
-          id: 10000
-          location: New location
+          id: 9999
+          location: "New location"
       response:
         data:
           user: null
         errors:
           message:
-            - non-existing
+            arg: id
+            code: non-existent
 
 Delete:
   root_type: 'mutation'
@@ -203,26 +221,37 @@ Delete:
   - This will delete a session.
   parameters:
     id:
-      type: String
+      type: Integer
       errors:
         - unspecified
-        - non-existing
+        - non-existent
   examples:
     "Session is successfully deleted":
       request:
         query_variables:
-          id: 1
+          id: 3
       response:
         data:
           deleteSession:
             id: null
-    "Session does not exist":
+    "Session is not deleted because it does not exist":
       request:
         query_variables:
-          id: 1000
+          id: 9999
       response:
         data:
           deleteSession: null
         errors:
           message:
-            - unspecified
+            arg: id
+            code: non-existent
+    "Session is not deleted because id is not specified":
+      request:
+        query_variables:
+      response:
+        data:
+          deleteSession: null
+        errors:
+          message:
+            arg: id
+            code: unspecified
