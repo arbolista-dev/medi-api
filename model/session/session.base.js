@@ -6,7 +6,7 @@ class SessionBase {
 
   get(args) {
     if (args.id) {
-      return this.getByID(args.id)
+      return this.getByID(args.id, args.user_)
     } else if (args.user_id) {
       return this.getByUser(args.user_id, args.start_date, args.end_date)
     } else {
@@ -14,8 +14,8 @@ class SessionBase {
     }
   }
 
-  getByID(id) {
-    return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE id= $1', id)
+  getByID(id, user_id) {
+    return db.any('SELECT id, user_id, status, date::abstime::timestamp, duration_planned, duration_success, location, note FROM sessions WHERE id= $1 AND user_id= $2', [id, user_id])
       .then((data) => {
         if (data[0] == null) {
           return new Error(JSON.stringify({

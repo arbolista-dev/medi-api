@@ -25,6 +25,9 @@ source .env
 
 ## API Documentation
 
+JWT auth tokens need to be passed in the HTTP header:
+{ authorization: Bearer + ' ' + JWT }
+
 ### Add user
 
 mutation {

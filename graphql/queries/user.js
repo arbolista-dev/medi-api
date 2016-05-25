@@ -13,8 +13,27 @@ const userQuery = {
       type: GraphQLInt
     }
   },
-  resolve(root, args) {
-    return userBase.get(args.id)
+  resolve(root, args, { rootValue: { viewer }}) {
+    console.info('Root viewer: ', viewer)
+    if (viewer) {
+      if (!args.id) {
+        return userBase.get(viewer._id)
+      } else {
+        if (args.id === viewer._id) {
+          return userBase.get(args.id)
+        } else {
+          return new Error(JSON.stringify({
+            arg: 'authorization',
+            msg: 'not-permitted'
+          }))
+        }
+      }
+    } else {
+      return new Error(JSON.stringify({
+        arg: 'authorization',
+        msg: 'not-permitted'
+      }))
+    }
   }
 }
 

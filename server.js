@@ -1,13 +1,10 @@
 import express from 'express'
 import expressGraphQL from 'express-graphql'
-import passport from 'passport'
 import schema from './graphql/schema'
 import yaml from 'js-yaml'
 import fs from 'fs'
-// import jwt from 'jsonwebtoken'
-// import ExpressJwt from 'express-jwt'
-// import authConfig from './lib/auth'
-
+import jwt from 'express-jwt'
+require('dotenv').load()
 
 const server = global.server = express()
 
@@ -34,12 +31,13 @@ server.get('/docs/:model', (req, res) => {
 })
 
 /* API */
-server.use(passport.initialize())
+server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
 
-server.use('/graphql', expressGraphQL({
-  schema,
+server.use('/graphql', expressGraphQL((request) => ({
+  schema: schema,
+  rootValue: { viewer: request.user || '' },
   graphiql: true
-}))
+})))
 
 server.listen(3003, () => {
   console.info('The server is running at http://localhost:3003/')

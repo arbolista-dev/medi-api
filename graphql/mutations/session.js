@@ -66,7 +66,17 @@ var sessionMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => sessionBase.update(args)
+    resolve(root, args, { rootValue: { viewer }}) {
+      console.info('Root viewer: ', viewer)
+      if (args.user_id === viewer._id) {
+        return sessionBase.update(args)
+      } else {
+        return new Error(JSON.stringify({
+          arg: 'authorization',
+          msg: 'not-permitted'
+        }))
+      }
+    }
   },
   deleteSession: {
     type: sessionType,
@@ -75,7 +85,18 @@ var sessionMutation = {
         type: GraphQLInt
       }
     },
-    resolve: (root, args) => sessionBase.delete(args.id)
+    resolve(root, args, { rootValue: { viewer }}) {
+      console.info('Root viewer: ', viewer)
+      let uid = args.user_id ? args.user_id : viewer._id
+      if (args.user_id === viewer._id) {
+        return sessionBase.delete(args.id)
+      } else {
+        return new Error(JSON.stringify({
+          arg: 'authorization',
+          msg: 'not-permitted'
+        }))
+      }
+    }
   }
 }
 

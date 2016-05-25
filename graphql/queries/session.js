@@ -22,8 +22,24 @@ const sessionQuery = {
       type: GraphQLString
     }
   },
-  resolve(root, args) {
-    return sessionBase.get(args)
+  resolve(root, args, { rootValue: { viewer }}) {
+    console.info('Root viewer: ', viewer)
+    if (viewer) {
+      // getting list of all sessions currently not possible
+      let uid = args.user_id ? args.user_id : viewer._id
+      let params = {
+        id: args.id,
+        user_id: uid,
+        start_date: args.start_date,
+        end_date: args.end_date
+      }
+      return sessionBase.get(params)
+    } else {
+      return new Error(JSON.stringify({
+        arg: 'authorization',
+        msg: 'not-permitted'
+      }))
+    }
   }
 }
 

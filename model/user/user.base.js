@@ -182,7 +182,7 @@ class UserBase {
                                       console.info('Password is correct? ', status)
                                       if (status) {
                                         let result = {}
-                                        result.token = generateJwt(user.id, user)
+                                        result.token = generateJwt(user[0].id, user[0])
                                         console.info('User authenticated using JWT: ', result)
                                         return result
                                       } else {

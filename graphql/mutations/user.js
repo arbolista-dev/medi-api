@@ -49,7 +49,17 @@ var userMutation = {
         type: GraphQLString
       }
     },
-    resolve: (root, args) => userBase.update(args)
+    resolve(root, args, { rootValue: { viewer }}) {
+      console.info('Root viewer: ', viewer)
+      if (args.id === viewer._id) {
+        userBase.update(args)
+      } else {
+        return new Error(JSON.stringify({
+          arg: 'authorization',
+          msg: 'failed'
+        }))
+      }
+    }
   },
   deleteUser: {
     type: userType,
@@ -58,7 +68,17 @@ var userMutation = {
         type: GraphQLInt
       }
     },
-    resolve: (root, args) => userBase.delete(args.id)
+    resolve(root, args, { rootValue: { viewer }}) {
+      console.info('Root viewer: ', viewer)
+      if (args.id === viewer._id) {
+        userBase.delete(args.id)
+      } else {
+        return new Error(JSON.stringify({
+          arg: 'authorization',
+          msg: 'failed'
+        }))
+      }
+    }
   },
   authenticateUser: {
     type: userType,
