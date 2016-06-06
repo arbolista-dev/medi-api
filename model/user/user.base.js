@@ -183,7 +183,8 @@ class UserBase {
                                       if (status) {
                                         let result = {}
                                         result.token = generateJwt(user[0].id, user[0])
-                                        console.info('User authenticated using JWT: ', result)
+                                        result.id = user[0].id
+                                        console.info('User: %s authenticated using JWT: %s', result.id, result.token)
                                         return result
                                       } else {
                                         return new Error(JSON.stringify({

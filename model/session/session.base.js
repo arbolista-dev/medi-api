@@ -6,7 +6,7 @@ class SessionBase {
 
   get(args) {
     if (args.id) {
-      return this.getByID(args.id, args.user_)
+      return this.getByID(args.id, args.user_id)
     } else if (args.user_id) {
       return this.getByUser(args.user_id, args.start_date, args.end_date)
     } else {
@@ -136,9 +136,9 @@ class SessionBase {
     }
   }
 
-  delete(id) {
+  delete(id, user_id) {
     if (id) {
-      return db.result('DELETE FROM sessions WHERE id = $1', id)
+      return db.result('DELETE FROM sessions WHERE id = $1 AND user_id = $2', [id, user_id])
         .then((result) => {
           if (result.rowCount === 0) {
             return new Error(JSON.stringify({

@@ -10,7 +10,7 @@ import schema from '../schema'
 import jwt from 'express-jwt'
 
 const server = express()
-var token
+var token, uid
 
 server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
 
@@ -101,13 +101,14 @@ describe('User mutations', () => {
 
   describe('#authenticate user', () => {
     it('is successful', (done) => {
-      let mutation = 'mutation { authenticateUser (email: "walter@example.com", password: "walter1") { token } }'
+      let mutation = 'mutation { authenticateUser (email: "walter@example.com", password: "walter1") { token id } }'
 
       token = getResponse(mutation)
 
       token.then(result => {
         let body = result.res.body
         token = 'Bearer ' + body.data.authenticateUser.token
+        uid = body.data.authenticateUser.id
         body.data.should.have.property('authenticateUser')
         body.should.not.have.property('errors')
         body.data.authenticateUser.token.should.include('.')
@@ -116,7 +117,7 @@ describe('User mutations', () => {
     })
 
     it('is unsuccessful because user does not exist', (done) => {
-      let mutation = 'mutation { authenticateUser (email: "testest@example.com", password: "password") { token } }'
+      let mutation = 'mutation { authenticateUser (email: "testest@example.com", password: "password") { token id } }'
 
       let response = getResponse(mutation)
 
@@ -130,7 +131,7 @@ describe('User mutations', () => {
     })
 
     it('is unsuccessful because email address is not given', (done) => {
-      let mutation = 'mutation { authenticateUser (password: "password") { token } }'
+      let mutation = 'mutation { authenticateUser (password: "password") { token id } }'
 
       let response = getResponse(mutation)
 
@@ -144,7 +145,7 @@ describe('User mutations', () => {
     })
 
     it('is unsuccessful because password is not given', (done) => {
-      let mutation = 'mutation { authenticateUser (email: "walter@example.com") { token } }'
+      let mutation = 'mutation { authenticateUser (email: "walter@example.com") { token id } }'
 
       let response = getResponse(mutation)
 
@@ -158,7 +159,7 @@ describe('User mutations', () => {
     })
 
     it('is unsuccessful with incorrect password', (done) => {
-      let mutation = 'mutation { authenticateUser (email: "walter@example.com", password: "password") { token } }'
+      let mutation = 'mutation { authenticateUser (email: "walter@example.com", password: "password") { token id } }'
 
       let response = getResponse(mutation)
 
@@ -174,7 +175,7 @@ describe('User mutations', () => {
 
   describe('#update user', () => {
     it('is successfully updated', (done) => {
-      let mutation = 'mutation { updateUser (id: 1, email: "sebastian@example.com", password: "sebastian1", first_name: "Sebastian", last_name: "Bach" ) { id email first_name last_name token } }'
+      let mutation = 'mutation { updateUser (id: ' + uid + ', email: "sebastian@example.com", password: "sebastian1", first_name: "Sebastian", last_name: "Bach" ) { id email first_name last_name token } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -191,7 +192,7 @@ describe('User mutations', () => {
     })
 
     it('is not updated because email address is not unique', (done) => {
-      let mutation = 'mutation { updateUser (id: 2, email: "sebastian@example.com", password: "sebastian1", first_name: "Sebastian", last_name: "Bach" ) { id email first_name last_name token } }'
+      let mutation = 'mutation { updateUser (id: ' + uid + ', email: "jamie@example.com") { id email first_name last_name token } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -204,7 +205,7 @@ describe('User mutations', () => {
       }).catch(err => console.error(err))
     })
 
-    it('is not updated because user with given ID does not exist', (done) => {
+    it('is not updated because specified user is not authenticated', (done) => {
       let mutation = 'mutation { updateUser (id: 9999, email: "sebastian@example.com", password: "sebastian1", first_name: "Sebastian", last_name: "Bach" ) { id email first_name last_name token } }'
 
       let response = getResponseWithAuth(mutation)
@@ -212,8 +213,8 @@ describe('User mutations', () => {
       response.then(result => {
         let body = result.res.body
         body.data.should.have.property('updateUser').null
-        body.errors[0].should.have.property('message').and.include('id')
-        body.errors[0].should.have.property('message').and.include('non-existent')
+        body.errors[0].should.have.property('message').and.include('authorization')
+        body.errors[0].should.have.property('message').and.include('failed')
         done()
       }).catch(err => console.error(err))
     })
@@ -221,7 +222,7 @@ describe('User mutations', () => {
 
   describe('#delete user', () => {
     it('is successfully deleted', (done) => {
-      let mutation = 'mutation { deleteUser (id: 1) { id } }'
+      let mutation = 'mutation { deleteUser (id: 4) { id } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -233,7 +234,7 @@ describe('User mutations', () => {
       }).catch(err => console.error(err))
     })
 
-    it('is not deleted because does not exist', (done) => {
+    it('is not deleted because specified user is not authenticated', (done) => {
       let mutation = 'mutation { deleteUser (id: 9999) { id } }'
 
       let response = getResponseWithAuth(mutation)
@@ -241,22 +242,8 @@ describe('User mutations', () => {
       response.then(result => {
         let body = result.res.body
         body.data.should.have.property('deleteUser').null
-        body.errors[0].should.have.property('message').and.include('id')
-        body.errors[0].should.have.property('message').and.include('non-existent')
-        done()
-      }).catch(err => console.error(err))
-    })
-
-    it('is not deleted because ID is not specified', (done) => {
-      let mutation = 'mutation { deleteUser { id } }'
-
-      let response = getResponseWithAuth(mutation)
-
-      response.then(result => {
-        let body = result.res.body
-        body.data.should.have.property('deleteUser').null
-        body.errors[0].should.have.property('message').and.include('id')
-        body.errors[0].should.have.property('message').and.include('unspecified')
+        body.errors[0].should.have.property('message').and.include('authorization')
+        body.errors[0].should.have.property('message').and.include('failed')
         done()
       }).catch(err => console.error(err))
     })

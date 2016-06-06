@@ -10,7 +10,7 @@ import schema from '../schema'
 import jwt from 'express-jwt'
 
 const server = express()
-var token
+var token, uid
 
 server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
 
@@ -38,19 +38,21 @@ function getResponse(_query) {
 
 describe('User queries', () => {
   it('-- authenticate User', (done) => {
-    let _query = 'mutation { authenticateUser(email: "thomas@example.com", password: "thomas2") { token }}'
+    let _query = 'mutation { authenticateUser(email: "jamie@example.com", password: "jamie2") { token id }}'
 
     token = getResponse(_query)
 
     token.then((result) => {
-      token = 'Bearer ' + result.res.body.data.authenticateUser.token
+      let body = result.res.body
+      token = 'Bearer ' + body.data.authenticateUser.token
+      uid = body.data.authenticateUser.id
       done()
     }).catch(err => console.error(err))
   })
 
   describe('#get one user by id', () => {
     it('successfully returns valid data', (done) => {
-      let query = 'query { user(id:2) { id email first_name last_name } }'
+      let query = 'query { user(id:' + uid + ') { id email first_name last_name } }'
 
       let response = getResponseWithAuth(query)
 
@@ -58,7 +60,7 @@ describe('User queries', () => {
         let body = result.res.body
         body.should.have.property('data')
         body.should.not.have.property('errors')
-        body.data.user.should.have.deep.property('[0].id', 2)
+        body.data.user.should.have.deep.property('[0].id', uid)
         body.data.user.should.have.deep.property('[0].email')
         body.data.user.should.have.deep.property('[0].first_name')
         body.data.user.should.have.deep.property('[0].last_name')
@@ -67,7 +69,7 @@ describe('User queries', () => {
     })
 
     it('successfully returns valid data including sessions', (done) => {
-      let query = 'query { user(id:2) { id email first_name last_name sessions { id status date duration_planned duration_success location note } } }'
+      let query = 'query { user(id: ' + uid + ') { id email first_name last_name sessions { id status date duration_planned duration_success location note } } }'
 
       let response = getResponseWithAuth(query)
 
@@ -75,7 +77,7 @@ describe('User queries', () => {
         let body = result.res.body
         body.should.have.property('data')
         body.should.not.have.property('errors')
-        body.data.user.should.have.deep.property('[0].id', 2)
+        body.data.user.should.have.deep.property('[0].id', uid)
         body.data.user.should.have.deep.property('[0].email')
         body.data.user.should.have.deep.property('[0].first_name')
         body.data.user.should.have.deep.property('[0].last_name')

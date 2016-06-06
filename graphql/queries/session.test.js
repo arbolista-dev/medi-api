@@ -10,7 +10,7 @@ import schema from '../schema'
 import jwt from 'express-jwt'
 
 const server = express()
-var token
+var token, uid, sid
 
 server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
 
@@ -33,8 +33,8 @@ function getResponseWithAuth(_query) {
 }
 
 describe('Session queries', () => {
-  it('-- authenticate User', (done) => {
-    let _query = 'mutation { authenticateUser(email: "thomas@example.com", password: "thomas2") { token }}'
+  it('-- authenticate user', (done) => {
+    let _query = 'mutation { authenticateUser(email: "jamie@example.com", password: "jamie2") { token id }}'
 
     token = request(server).post(urlString())
     .send({ query: _query })
@@ -43,14 +43,28 @@ describe('Session queries', () => {
     })
 
     token.then((result) => {
-      token = 'Bearer ' + result.res.body.data.authenticateUser.token
+      let body = result.res.body
+      token = 'Bearer ' + body.data.authenticateUser.token
+      uid = body.data.authenticateUser.id
+      done()
+    }).catch(err => console.error(err))
+  })
+
+  it('-- find a valid session for authenticated user', (done) => {
+    let query = 'query { user(id: ' + uid + ') { sessions { id } } }'
+
+    let response = getResponseWithAuth(query)
+
+    response.then((result) => {
+      let body = result.res.body
+      sid = body.data.user[0].sessions[0].id
       done()
     }).catch(err => console.error(err))
   })
 
   describe('#get one session by id', () => {
     it('successfully returns valid data', (done) => {
-      let query = 'query { session(id:2) { id user_id status date duration_planned duration_success  location note } }'
+      let query = 'query { session(id: ' + sid + ') { id user_id status date duration_planned duration_success location note } }'
 
       let response = getResponseWithAuth(query)
 
@@ -58,8 +72,8 @@ describe('Session queries', () => {
         let body = result.res.body
         body.should.have.property('data')
         body.should.not.have.property('errors')
-        body.data.session.should.have.deep.property('[0].id', 2)
-        body.data.session.should.have.deep.property('[0].user_id')
+        body.data.session.should.have.deep.property('[0].id', sid)
+        body.data.session.should.have.deep.property('[0].user_id', uid)
         body.data.session.should.have.deep.property('[0].status')
         body.data.session.should.have.deep.property('[0].date')
         body.data.session.should.have.deep.property('[0].duration_planned')
@@ -87,7 +101,7 @@ describe('Session queries', () => {
 
   describe('#get sessions by user and date range', () => {
     it('successfully returns valid data', (done) => {
-      let query = 'query { session(user_id: 2, start_date: "2016-05-01", end_date: "2016-05-31") { id user_id status date duration_planned duration_success  location note } }'
+      let query = 'query { session(user_id: ' + uid + ', start_date: "2016-05-01", end_date: "2016-05-31") { id user_id status date duration_planned duration_success  location note } }'
 
       let response = getResponseWithAuth(query)
 
@@ -96,7 +110,7 @@ describe('Session queries', () => {
         body.should.have.property('data')
         body.should.not.have.property('errors')
         body.data.session.should.have.deep.property('[0].id')
-        body.data.session.should.have.deep.property('[0].user_id', 2)
+        body.data.session.should.have.deep.property('[0].user_id', uid)
         body.data.session.should.have.deep.property('[0].status')
         body.data.session.should.have.deep.property('[0].date')
         body.data.session.should.have.deep.property('[0].duration_planned')
@@ -114,7 +128,6 @@ describe('Session queries', () => {
 
       response.then((result) => {
         let body = result.res.body
-        console.log('err body', body)
         body.should.have.property('data')
         body.errors[0].should.have.property('message').and.include('user_id')
         body.errors[0].should.have.property('message').and.include('non-existent')

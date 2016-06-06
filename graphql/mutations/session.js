@@ -73,7 +73,7 @@ var sessionMutation = {
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
-          msg: 'not-permitted'
+          msg: 'failed'
         }))
       }
     }
@@ -87,13 +87,12 @@ var sessionMutation = {
     },
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
-      let uid = args.user_id ? args.user_id : viewer._id
-      if (args.user_id === viewer._id) {
-        return sessionBase.delete(args.id)
+      if (viewer._id) {
+        return sessionBase.delete(args.id, viewer._id)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
-          msg: 'not-permitted'
+          msg: 'failed'
         }))
       }
     }

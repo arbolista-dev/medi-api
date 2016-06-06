@@ -10,7 +10,7 @@ import schema from '../schema'
 import jwt from 'express-jwt'
 
 const server = express()
-var token
+var token, uid, sid
 
 server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
 
@@ -39,12 +39,26 @@ function getResponse(_query) {
 
 describe('Session mutations', () => {
   it('-- authenticate User', (done) => {
-    let _query = 'mutation { authenticateUser(email: "thomas@example.com", password: "thomas2") { token }}'
+    let _query = 'mutation { authenticateUser(email: "thomas@example.com", password: "thomas2") { token id }}'
 
     token = getResponse(_query)
 
     token.then((result) => {
-      token = 'Bearer ' + result.res.body.data.authenticateUser.token
+      let body = result.res.body
+      token = 'Bearer ' + body.data.authenticateUser.token
+      uid = body.data.authenticateUser.id
+      done()
+    }).catch(err => console.error(err))
+  })
+
+  it('-- find a valid session for authenticated user', (done) => {
+    let query = 'query { user(id: ' + uid + ') { sessions { id } } }'
+
+    let response = getResponseWithAuth(query)
+
+    response.then((result) => {
+      let body = result.res.body
+      sid = body.data.user[0].sessions[0].id
       done()
     }).catch(err => console.error(err))
   })
@@ -81,7 +95,7 @@ describe('Session mutations', () => {
 
   describe('#update session', () => {
     it('is successful and returns valid data', (done) => {
-      let mutation = 'mutation { updateSession ( id: 2, user_id: 2, status: true, location: "At home updated by test", note: "Feeling", date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)", duration_planned: 600, duration_success: 600 ) { id user_id note location status duration_planned duration_success } }'
+      let mutation = 'mutation { updateSession ( id: ' + sid + ', user_id: ' + uid + ', status: true, location: "At home updated by test", note: "Feeling", date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)", duration_planned: 600, duration_success: 600 ) { id user_id note location status duration_planned duration_success } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -95,7 +109,7 @@ describe('Session mutations', () => {
     })
 
     it('is not updated because it does not exist', (done) => {
-      let mutation = 'mutation { updateSession ( id: 9999, user_id: 2, status: true, location: "At home", note: "Feeling", date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)", duration_planned: 600, duration_success: 600 ) { id } }'
+      let mutation = 'mutation { updateSession ( id: 9999, user_id: ' + uid + ', status: true, location: "At home", note: "Feeling", date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)", duration_planned: 600, duration_success: 600 ) { id } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -111,7 +125,7 @@ describe('Session mutations', () => {
 
   describe('#delete session', () => {
     it('is successfully deleted', (done) => {
-      let mutation = 'mutation { deleteSession (id: 2) { id } }'
+      let mutation = 'mutation { deleteSession (id: ' + sid + ') { id } }'
 
       let response = getResponseWithAuth(mutation)
 
@@ -131,8 +145,8 @@ describe('Session mutations', () => {
       response.then((result) => {
         let body = result.res.body
         body.data.should.have.property('deleteSession').null
-        body.errors[0].should.have.property('message').and.include('authorization')
-        body.errors[0].should.have.property('message').and.include('not-permitted')
+        body.errors[0].should.have.property('message').and.include('id')
+        body.errors[0].should.have.property('message').and.include('non-existent')
         done()
       }).catch(err => console.error(err))
     })

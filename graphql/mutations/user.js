@@ -52,7 +52,7 @@ var userMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (args.id === viewer._id) {
-        userBase.update(args)
+        return userBase.update(args)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
@@ -71,7 +71,7 @@ var userMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (args.id === viewer._id) {
-        userBase.delete(args.id)
+        return userBase.delete(args.id)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
