@@ -6,7 +6,7 @@ import userMutations from './mutations/user'
 import sessionMutations from './mutations/session'
 
 
-const schema = new GraphQLSchema({
+export const schema = new GraphQLSchema({
   query: new GraphQLObjectType({
     name: 'Query',
     fields: {
@@ -27,5 +27,3 @@ const schema = new GraphQLSchema({
     }
   })
 })
-
-export default schema

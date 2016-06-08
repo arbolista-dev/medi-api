@@ -1,6 +1,6 @@
 import express from 'express'
 import expressGraphQL from 'express-graphql'
-import schema from './graphql/schema'
+import { schema } from './graphql/schema'
 import yaml from 'js-yaml'
 import fs from 'fs'
 import jwt from 'express-jwt'
@@ -8,7 +8,16 @@ require('dotenv').load()
 
 const server = global.server = express()
 
-/* API DOCS */
+/* API */
+server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
+
+server.use('/graphql', expressGraphQL((request) => ({
+  schema: schema,
+  rootValue: { viewer: request.user || '' },
+  graphiql: true
+})))
+
+/* API docs */
 server.set('view engine', 'ejs')
 server.set('views', 'docs')
 
@@ -30,15 +39,4 @@ server.get('/docs/:model', (req, res) => {
   })
 })
 
-/* API */
-server.use(jwt({ secret: process.env.JWT_SECRET, credentialsRequired: false}))
-
-server.use('/graphql', expressGraphQL((request) => ({
-  schema: schema,
-  rootValue: { viewer: request.user || '' },
-  graphiql: true
-})))
-
-server.listen(3003, () => {
-  console.info('The server is running at http://localhost:3003/')
-})
+server.listen(3003, () => console.info(`The server is running at http://localhost:3003`))
