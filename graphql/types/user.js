@@ -1,10 +1,8 @@
 import { GraphQLObjectType, GraphQLList, GraphQLString, GraphQLInt } from 'graphql'
 
 import sessionType from '../types/session'
-import SessionBase from '../../model/session/session.base'
+import { getSessionByUser } from '../../model/session/session.base'
 
-
-let sessionBase = new SessionBase()
 
 const UserType = new GraphQLObjectType({
   name: 'User',
@@ -24,7 +22,7 @@ const UserType = new GraphQLObjectType({
     sessions: {
       type: new GraphQLList(sessionType),
       resolve(root) {
-        return sessionBase.getByUser(root.id)
+        return getSessionByUser(root.id)
       }
     },
     token: {

@@ -1,11 +1,9 @@
 import { GraphQLString, GraphQLBoolean, GraphQLInt } from 'graphql'
 
 import sessionType from '../types/session'
-import SessionBase from '../../model/session/session.base'
+import { updateSession, deleteSession } from '../../model/session/session.base'
 import Session from '../../model/session/session'
 
-
-var sessionBase = new SessionBase()
 
 var sessionMutation = {
   addSession: {
@@ -69,7 +67,7 @@ var sessionMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (args.user_id === viewer._id) {
-        return sessionBase.update(args)
+        return updateSession(args)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
@@ -88,7 +86,7 @@ var sessionMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (viewer._id) {
-        return sessionBase.delete(args.id, viewer._id)
+        return deleteSession(args.id, viewer._id)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',

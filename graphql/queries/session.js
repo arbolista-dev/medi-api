@@ -1,10 +1,8 @@
 import { GraphQLInt, GraphQLString, GraphQLList } from 'graphql'
 
 import sessionType from '../types/session'
-import SessionBase from '../../model/session/session.base'
+import { getSession } from '../../model/session/session.base'
 
-
-var sessionBase = new SessionBase()
 
 const sessionQuery = {
   type: new GraphQLList(sessionType),
@@ -33,7 +31,7 @@ const sessionQuery = {
         start_date: args.start_date,
         end_date: args.end_date
       }
-      return sessionBase.get(params)
+      return getSession(params)
     } else {
       return new Error(JSON.stringify({
         arg: 'authorization',

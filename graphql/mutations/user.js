@@ -2,11 +2,12 @@ import { GraphQLString, GraphQLInt } from 'graphql'
 
 import userType from '../types/user'
 
-import UserBase from '../../model/user/user.base'
+import {
+  updateUser,
+  deleteUser,
+  authenticateUser
+} from '../../model/user/user.base'
 import User from '../../model/user/user'
-
-
-var userBase = new UserBase()
 
 var userMutation = {
   addUser: {
@@ -52,7 +53,7 @@ var userMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (args.id === viewer._id) {
-        return userBase.update(args)
+        return updateUser(args)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
@@ -71,7 +72,7 @@ var userMutation = {
     resolve(root, args, { rootValue: { viewer }}) {
       console.info('Root viewer: ', viewer)
       if (args.id === viewer._id) {
-        return userBase.delete(args.id)
+        return deleteUser(args.id)
       } else {
         return new Error(JSON.stringify({
           arg: 'authorization',
@@ -91,7 +92,7 @@ var userMutation = {
       }
     },
     resolve(root, args) {
-      return userBase.authenticate(args)
+      return authenticateUser(args)
     }
   }
 }
