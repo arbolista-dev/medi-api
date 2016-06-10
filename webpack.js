@@ -10,18 +10,25 @@ var appConfig = {
   ],
   output: {
     filename: 'bundle.js',
-    path: path.join(__dirname + 'public', 'assets')
+    publicPath: '/',
+    path: path.join(__dirname + 'public')
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ],
   module: {
     loaders: [{
       test: /\.js$/,
-      include: path.join(__dirname + 'app'),
-      loaders: ['react-hot', 'babel&plugins[]=' + path.join(__dirname, 'relayPlugin')]
+      exclude: /node_modules/,
+      loader: 'react-hot!babel'
     }]
+  },
+  resolve: {
+    extensions: ['', '.js']
+  },
+  devServer: {
+    contentBase: path.join(__dirname + 'public'),
+    hot: true
   }
 }
 

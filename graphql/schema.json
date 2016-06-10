@@ -120,7 +120,7 @@
           "description": null,
           "fields": [
             {
-              "name": "uid",
+              "name": "id",
               "description": null,
               "args": [],
               "type": {
