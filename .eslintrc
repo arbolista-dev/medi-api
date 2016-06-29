@@ -1,0 +1,16 @@
+{
+  "env": {
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "extends": ["eslint:recommended"],
+  "rules": {
+    "quotes": ["error", "single", "avoid-escape"],
+    "strict": ["error", "safe"],
+    "indent": ["error", 2, {"VariableDeclarator": 2}],
+    "no-console": ["error", {"allow": ["info", "warn", "error"]}],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+  },
+  "parser": "babel-eslint"
+}

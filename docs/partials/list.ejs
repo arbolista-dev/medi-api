@@ -1,0 +1,16 @@
+<% include ./header %>
+
+<div class="page-header">
+    <h1>Medi App API</h1>
+    <p class="lead">The following types are available:</p>
+</div>
+
+<div class="page-header">
+  <% route_list.forEach(function(route) { %>
+    <h1>
+        <a href="/docs/<%=route%>"><%= route %></a>
+    </h1>
+  <% })%>
+</div>
+
+<% include ./footer %>

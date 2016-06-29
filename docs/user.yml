@@ -1,0 +1,266 @@
+Add:
+  root_type: 'mutation'
+  field: 'addUser'
+  description:
+  - This will create a new user account.
+  parameters:
+    email:
+      type: String
+      errors:
+        - non-unique
+        - unspecified
+    first_name:
+      type: String
+    last_name:
+      type: String
+    password:
+      type: String
+      errors:
+        - unspecified
+        - mismatch
+  examples:
+    "User is successfully created":
+      request:
+        query_variables:
+          email: walter@example.com
+          password: walter1
+          first_name: Walter
+          last_name: White
+      response:
+        data:
+          addUser:
+            id: 4
+            email: walter@example.com
+            first_name: Walter
+            last_name: White
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjEwLCJlbWFpbCI6ImphQGV4YW1wbGUuY29tIiwibmFtZSI6IkppbW15IEhlbmRyaXgiLCJleHAiOjE0NjM1MDk5MzcsImlhdCI6MTQ2MjkwNTEzN30.HO8j9XwR9s2egdAazc5UfhHQOfk-VE2-T25o6q3SpVU
+    "User is not created without unique email address":
+      request:
+        query_variables:
+          email: walter@example.com
+          password: walter1
+          first_name: Walter
+          last_name: White
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            arg: email
+            code: non-unique
+    "User is not created without an email address given":
+      request:
+        query_variables:
+          password: walter1
+          first_name: Walter
+          last_name: White
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            arg: email
+            code: unspecified
+    "User is not created without a password given":
+      request:
+        query_variables:
+          email: walter1@example.com
+          first_name: Walter
+          last_name: White
+      response:
+        data:
+          addUser: null
+        errors:
+          message:
+            arg: password
+            code: unspecified
+
+Update:
+  root_type: 'mutation'
+  field: 'updateUser'
+  authorized: true
+  description:
+  - This will update an existing user account.
+  parameters:
+    id:
+      type: Integer
+      errors:
+        - non-existing
+        - unspecified
+    email:
+      type: String
+      errors:
+        - non-unique
+        - unspecified
+    first_name:
+      type: String
+    last_name:
+      type: String
+    password:
+      type: String
+      errors:
+        - mismatch
+  examples:
+    "User is successfully updated":
+      request:
+        query_variables:
+          id: 1
+          email: sebastian@example.com
+          password: sebastian1
+          first_name: Sebastian
+          last_name: Bach
+      response:
+        data:
+          updateUser:
+            id: 1
+            email: sebastian@example.com
+            password: sebastian1
+            first_name: Sebastian
+            last_name: Bach
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOjEwLCJlbWFpbCI6ImphQGV4YW1wbGUuY29tIiwibmFtZSI6IkppbW15IEhlbmRyaXgiLCJleHAiOjE0NjM1MDk5MzcsImlhdCI6MTQ2MjkwNTEzN30.HO8j9XwR9s2egdAazc5UfhHQOfk-VE2-T25o6q3SpVU
+    "User is not updated because email address is not unique":
+      request:
+        query_variables:
+          id: 2
+          email: "sebastian@example.com"
+          password: "sebastian1"
+          first_name: "Sebastian"
+          last_name: "Bach"
+      response:
+        data:
+          updateUser: null
+        errors:
+          message:
+            arg: email
+            code: non-unique
+    "User is not updated because user with given ID does not exist":
+      request:
+        query_variables:
+          id: 9999
+          email: "sebastian@example.com"
+          password: "sebastian1"
+          first_name: "Sebastian"
+          last_name: "Bach"
+      response:
+        data:
+          updateUser: null
+        errors:
+          message:
+            arg: id
+            code: "non-existent"
+
+Delete:
+  root_type: 'mutation'
+  field: 'deleteUser'
+  authorized: true
+  description:
+  - This will delete a User account.
+  parameters:
+    id:
+      type: Integer
+      errors:
+        - non-existent
+        - unspecified
+  examples:
+    "User is successfully deleted":
+      request:
+        query_variables:
+          id: 1
+      response:
+        data:
+          deleteUser:
+            id: null
+    "User is not deleted because does not exist":
+      request:
+        query_variables:
+          id: 9999
+      response:
+        data:
+          deleteUser: null
+        errors:
+          message:
+            arg: id
+            code: "non-existent"
+    "User is not deleted because ID is not specified":
+      request:
+        query_variables:
+      response:
+        data:
+          deleteUser: null
+        errors:
+          message:
+            arg: id
+            code: unspecified
+
+Authenticate:
+  root_type: 'mutation'
+  field: 'authenticateUser'
+  description:
+  - This will authenticate a user.
+  parameters:
+    email:
+      type: String
+      errors:
+        - non-existent
+        - unspecified
+    password:
+      type: String
+      errors:
+        - unspecified
+        - incorrect
+  examples:
+    "User is successfully authenticated":
+      request:
+        query_variables:
+          email: walter@example.com
+          password: walter1
+      response:
+        data:
+          authenticateUser:
+            token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoidW5kZWZpbmVkIHVuZGVmaW5lZCIsImV4cCI6MTQ2MzUxOTU5MiwiaWF0IjoxNDYyOTE0NzkyfQ.tqxKGlDLIA49fcIE4P6nEQTWyckIprWc2NeqiVFJ3W0
+    "User authentication is unsuccessful because user does not exist":
+      request:
+        query_variables:
+          email: adsfasdfasdf@example.com
+          password: jimmy1
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            arg: "email"
+            code: "non-existent"
+    "User authentication is unsuccessful because email address is not given":
+      request:
+        query_variables:
+          password: password
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            arg: email
+            code: unspecified
+    "User authentication is unsuccessful because password is not given":
+      request:
+        query_variables:
+          email: jimmy@example.com
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            arg: password
+            code: unspecified
+    "User authentication is unsuccessful with incorrect password":
+      request:
+        query_variables:
+          email: walter@example.com
+          password: wrongpass
+      response:
+        data:
+          authenticateUser: null
+        errors:
+          message:
+            arg: password
+            code: incorrect

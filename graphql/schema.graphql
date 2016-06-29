@@ -1,0 +1,34 @@
+type Mutation {
+  addUser(email: String, first_name: String, last_name: String, password: String): User
+  updateUser(id: Int, email: String, first_name: String, last_name: String, password: String): User
+  deleteUser(id: Int): User
+  authenticateUser(email: String, password: String): User
+  addSession(status: Boolean, user_id: Int, date: String, duration_planned: Int, duration_success: Int, location: String, note: String): Session
+  updateSession(id: Int, status: Boolean, user_id: Int, date: String, duration_planned: Int, duration_success: Int, location: String, note: String): Session
+  deleteSession(id: Int): Session
+}
+
+type Query {
+  user(id: Int): [User]
+  session(id: Int, user_id: Int, start_date: String, end_date: String): [Session]
+}
+
+type Session {
+  id: Int
+  status: Boolean
+  date: String
+  duration_planned: Int
+  duration_success: Int
+  note: String
+  location: String
+  user_id: Int
+}
+
+type User {
+  id: Int
+  email: String
+  first_name: String
+  last_name: String
+  sessions: [Session]
+  token: String
+}

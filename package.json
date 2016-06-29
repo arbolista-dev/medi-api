@@ -4,23 +4,73 @@
   "description": "Server API for Medi app.",
   "main": "gulpfile.babel.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test-only": "find . -path ./node_modules -prune -o -name '*test.js' | xargs mocha --compilers js:babel-core/register",
+    "test": "npm run db-reset && npm run db-seed && find . -path ./node_modules -prune -o -name '*test.js' | xargs mocha --compilers js:babel-core/register",
+    "db-migrate": "./node_modules/.bin/pg-migrate up --migrations-dir db/migrations",
+    "db-rollback": "./node_modules/.bin/pg-migrate down --migrations-dir db/migrations",
+    "db-reset": "npm run db-rollback && npm run db-rollback && npm run db-migrate",
+    "db-seed": "gulp db-seed && node ./build/test/seed.js",
+    "write-schema": "./node_modules/babel-cli/bin/babel-node.js utils/createSchema.js",
+    "dev": "npm run write-schema && gulp"
   },
-  "author": "manue1",
-  "license": "ISC",
-  "devDependencies": {
-    "babel-core": "^6.7.4",
-    "babel-loader": "^6.2.4",
-    "babel-polyfill": "^6.7.4",
-    "babel-preset-es2015": "^6.6.0",
+  "contributors": [
+    {
+      "name": "Manuel Bergler",
+      "email": "manuel.bergler@gmail.com"
+    }
+  ],
+  "author": {
+    "name": "Arbolista Development",
+    "website": "http://www.arbolista.mx"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^0.8.6",
     "express": "^4.13.4",
     "express-graphql": "^0.4.13",
-    "graphql": "^0.4.16",
-    "gulp": "^3.9.1",
-    "gutil": "^1.6.4",
-    "json-loader": "^0.5.4",
+    "express-jwt": "^3.3.0",
+    "graphql": "^0.4.18",
+    "graphql-relay": "^0.4.2",
+    "jsonwebtoken": "^5.7.0",
     "pg": "^4.5.2",
+    "pg-promise": "^3.5.5",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "react-relay": "^0.9.0",
+    "react-router": "^2.4.1",
+    "react-router-relay": "^0.13.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.1",
+    "babel-eslint": "^6.0.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-react-transform": "^2.0.2",
+    "babel-polyfill": "^6.7.4",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babel-relay-plugin": "^0.9.0",
+    "body-parser": "^1.15.0",
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "dotenv": "^2.0.0",
+    "ejs": "^2.4.1",
+    "eslint": "^2.7.0",
+    "gulp": "^3.9.1",
+    "gulp-graphql": "^0.2.0",
+    "gutil": "^1.6.4",
+    "js-yaml": "^3.6.1",
+    "json-loader": "^0.5.4",
+    "mocha": "^2.4.5",
+    "node-pg-migrate": "0.0.10",
+    "nodemon": "^1.9.2",
+    "querystring": "^0.2.0",
+    "react-hot-loader": "^1.3.0",
+    "supertest": "^1.2.0",
+    "supertest-as-promised": "^3.1.0",
     "webpack": "^1.12.14",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-node-externals": "^1.0.0",
     "yargs": "^4.4.0"
   }
 }

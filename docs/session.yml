@@ -1,0 +1,257 @@
+Add:
+  root_type: 'mutation'
+  field: 'addSession'
+  description:
+  - This will create a new session.
+  parameters:
+    status:
+      type: Boolean
+    user_id:
+      type: Integer
+      errors:
+        - non-existent
+    date:
+      type: String
+    duration_planned:
+      type: String
+    duration_success:
+      type: String
+    location:
+      type: String
+    note:
+      type: String
+  examples:
+    "Session is successfully created":
+      request:
+        query_variables:
+          user_id: 2
+          status: true
+          location: In bed
+          note: Rainy day
+          date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
+          duration_planned: 600
+          duration_success: 600
+      response:
+        data:
+          addSession:
+            id: 2
+    "Session is not created without having existing user specified":
+      request:
+        query_variables:
+          user_id: 9999
+          status: true
+          location: In the forest
+          note: Feeling good
+          date: Mon Jun 06 2016 23:05:00 GMT-0500 (CDT)
+          duration_planned: 600
+          duration_success: 600
+      response:
+        data:
+          addSession: null
+        errors:
+          message:
+            arg: user_id
+            code: non-existent
+
+Get:
+  root_type: 'query'
+  field: 'session'
+  authorized: true
+  description:
+  - This will retrieve one or all sessions.
+  parameters:
+    id:
+      type: Integer
+      errors:
+        - non-existent
+  examples:
+    "Get one session by id successfully returns valid data":
+      request:
+        query_variables:
+          id: 2
+      response:
+        data:
+          session:
+            id: 2
+            user_id: 2
+            status: true
+            location: In bed
+            note: Rainy day
+            date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
+            duration_planned: 600
+            duration_success: 600
+    "Get one session by id returns error if session does not exist":
+      request:
+        query_variables:
+          id: 9999
+      response:
+        data:
+          session: null
+        errors:
+          message:
+            arg: id
+            code: non-existent
+
+    "Get sessions by user and date range successfully returns valid data":
+      request:
+        query_variables:
+          user_id: 2
+          start_date: 2016-05-01
+          end_date: 2016-05-31
+      response:
+        data:
+          session:
+            id: 2
+            user_id: 2
+            status: true
+            location: In bed
+            note: Rainy day
+            date: Wed May 11 2016 13:06:44 GMT-0500 (CDT)
+            duration_planned: 600
+            duration_success: 600
+
+    "Get sessions by user and date range returns error if no sessions exist for user within date range":
+      request:
+        query_variables:
+          id: 999
+          start_date: 2016-04-22
+          end_date: 2016-05-25
+      response:
+        data:
+          session: null
+        errors:
+          message:
+            arg: user_id
+            code: non-existent
+
+    "Get all sessions successfully returns valid data":
+      request:
+        query_variables:
+      response:
+        data:
+          session:
+          -
+            id: 1
+            user_id: 1
+            status: false
+            location: "In the park"
+            note: "Bad day"
+            date: "Wed May 18 2016 17:06:44 GMT-0500 (CDT)"
+            duration_planned: 1200
+            duration_success: 900
+          -
+            id: 2
+            user_id: 2
+            status: true
+            date: "Wed May 11 2016 13:06:44 GMT-0500 (CDT)"
+            duration_planned: 600
+            duration_success: 600
+            location: "In bed"
+            note: "Rainy day"
+          -
+            id: 3
+            user_id: 3
+            status: true
+            date: "Mon Jun 06 2016 23:05:00 GMT-0500 (CDT)"
+            duration_planned: 600
+            duration_success: 600
+            location: "In the forest"
+            note: "Feeling good"
+
+Update:
+  root_type: 'mutation'
+  field: 'updateSession'
+  authorized: true
+  description:
+  - This will update an existing session.
+  parameters:
+    id:
+      type: Integer
+      errors:
+        - non-existent
+        - unspecified
+    status:
+      type: Boolean
+    user_id:
+      type: Integer
+    date:
+      type: String
+    duration_planned:
+      type: String
+    duration_success:
+      type: String
+    location:
+      type: String
+    note:
+      type: String
+  examples:
+    "Update session is successful and returns valid data":
+      request:
+        query_variables:
+          id: 3
+          user_id: 3
+          status: true
+          location: "At home updated by test"
+          note: "Feeling"
+          date: "Sat Feb 06 2016 22:05:00 GMT-0600 (CST)"
+          duration_planned: 600
+          duration_success: 600
+      response:
+        data:
+          addSession:
+            id: 1
+    "Session is not updated because it does not exist":
+      request:
+        query_variables:
+          id: 9999
+          location: "New location"
+      response:
+        data:
+          user: null
+        errors:
+          message:
+            arg: id
+            code: non-existent
+
+Delete:
+  root_type: 'mutation'
+  field: 'deleteSession'
+  authorized: true
+  description:
+  - This will delete a session.
+  parameters:
+    id:
+      type: Integer
+      errors:
+        - unspecified
+        - non-existent
+  examples:
+    "Session is successfully deleted":
+      request:
+        query_variables:
+          id: 3
+      response:
+        data:
+          deleteSession:
+            id: null
+    "Session is not deleted because it does not exist":
+      request:
+        query_variables:
+          id: 9999
+      response:
+        data:
+          deleteSession: null
+        errors:
+          message:
+            arg: id
+            code: non-existent
+    "Session is not deleted because id is not specified":
+      request:
+        query_variables:
+      response:
+        data:
+          deleteSession: null
+        errors:
+          message:
+            arg: id
+            code: unspecified
